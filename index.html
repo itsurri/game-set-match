@@ -619,7 +619,7 @@ const NAZ=[['IT','Italia'],['AL','Albania'],['AR','Argentina'],['AT','Austria'],
   ['ES','Spagna'],['US','Stati Uniti'],['SE','Svezia'],['CH','Svizzera'],['TN','Tunisia'],['UA','Ucraina']];
 
 const blankProfile=()=>({name:'',surname:'',hand:'Destro',level:'',avatar:'',age:'',nat:'IT',city:'',height:''});
-const blank=()=>({profile:blankProfile(),matches:[],theme:'',dataFix:0});
+const blank=()=>({profile:blankProfile(),matches:[],theme:''});
 let S=load();
 let view={n:'home'};
 let draft=null;
@@ -651,30 +651,30 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
    Quelle 150 partite non avevano orario scelto, durata né campo: all'epoca i
    campi non esistevano ancora. Qui ricevono un orario reale, un'ora di durata
    e il circolo giusto per anno e superficie.
-   Si riconoscono dall'id (quelle del backup iniziano per "imp") oppure
-   dall'assenza della durata: le partite registrate dal form non si toccano.
-   Gira una sola volta: il numero di versione viaggia col resto dei dati. */
+   Il marcatore sta sulla singola partita, non sull'insieme: così funziona anche
+   quando le partite arrivano dal cloud dopo l'avvio, e non si ripete. */
 const DATA_FIX=2;
 const ORARI_REALI=['10:00','11:00','12:00','17:00','18:00','19:00','20:00','21:00'];
 const CIRCOLI_TERRA=['Momy Sport Village','Monviso Sporting Club','Fornaci','Circoletto Rosso',
                      'Trecate 46','Nord Tennis','Master Club'];
 const CIRCOLI_CEMENTO=['De Coubertin','Momy Sport Village'];
 function fixImported(){
-  if((S.dataFix||0)>=DATA_FIX)return 0;
   const a=arr=>arr[Math.floor(Math.random()*arr.length)];
   let n=0;
   (S.matches||[]).forEach(m=>{
-    const daBackup=/^imp/.test(m.id||'')||!m.duration;
-    if(!daBackup)return;
+    // le partite del backup: id "imp…", oppure senza esito salvato (quelle del
+    // form ce l'hanno sempre, perché l'esito lo scegli tu prima di registrare)
+    if(!/^imp/.test(m.id||'') && m.result)return;
+    if((m.fix||0)>=DATA_FIX)return;            // marcatore sulla singola partita
     if(ORARI_REALI.indexOf(m.time)<0)m.time=a(ORARI_REALI);
     if(!m.duration)m.duration=60;
     const y=(m.date||'').slice(0,4);
     if(y==='2026')m.court='Laurera 15A40';
     else if(y==='2024'||y==='2025')m.court=a(m.surface==='clay'?CIRCOLI_TERRA:CIRCOLI_CEMENTO);
+    m.fix=DATA_FIX;
     n++;
   });
-  S.dataFix=DATA_FIX;
-  localStorage.setItem(KEY,JSON.stringify(S));cloudPush();
+  if(n){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
   return n;
 }
 
@@ -713,8 +713,7 @@ function cloudPush(){
   cloudTimer=setTimeout(()=>{
     const fb=window.firebase;
     fb.set(fb.ref(fb.db,'users/'+cloudUser.uid),
-      {profile:S.profile, matches:S.matches, theme:S.theme, dataFix:S.dataFix||0,
-       updatedAt:Date.now()}).catch(()=>{});
+      {profile:S.profile, matches:S.matches, theme:S.theme, updatedAt:Date.now()}).catch(()=>{});
   },800);
 }
 async function cloudPull(){
@@ -735,7 +734,6 @@ function mergeFromCloud(remote){
   S.matches=Object.values(map);
   if(remote.profile)S.profile=Object.assign(S.profile,remote.profile);
   if(remote.theme)S.theme=remote.theme;
-  S.dataFix=Math.max(S.dataFix||0, remote.dataFix||0);
   localStorage.setItem(KEY,JSON.stringify(S));
   fixImported();          // le partite arrivate dal cloud possono essere ancora da sistemare
   applyTheme();render();
