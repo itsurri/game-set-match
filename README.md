@@ -22,14 +22,13 @@ Aprendola da file locale funziona comunque, ma senza modalità standalone.
 ## Dati
 
 Di base tutto è salvato in `localStorage` **solo sul dispositivo**: niente account, niente server.
-Da *Profilo* puoi anche **accedere con Google**: le partite vengono sincronizzate su Firestore e ritrovate su ogni dispositivo dove fai login con lo stesso account.
+Da *Profilo* puoi anche **accedere con Google**: le partite vengono sincronizzate su Firebase Realtime Database e ritrovate su ogni dispositivo dove fai login con lo stesso account.
 Da *Profilo* puoi inoltre esportare/importare un backup JSON e caricare dati di esempio.
 
 ## Funzioni
 
-- **Registrazione partita**: data/ora, avversario, superficie (erba/terra/cemento/indoor), punteggio per set con tie-break, esito calcolato in tempo reale.
-- **Metriche facoltative**: aces, doppi falli, % prime, vincenti, errori gratuiti, break point convertiti, note tattiche.
+- **Registrazione partita**: data/ora, avversario, superficie (terra/cemento), punteggio per set con tie-break, esito calcolato in tempo reale, note tattiche libere.
 - **Live**: segui il match game per game; il punteggio resta visibile nella pill sotto la Dynamic Island e a fine partita precompila il form.
 - **Dashboard**: profilo, win/loss, striscia, forma delle ultime 10 con grafico cumulativo.
-- **Statistiche**: filtri Mese / Anno / All-Time, anello win rate, barre per superficie, medie per partita, avversari frequenti.
+- **Statistiche**: filtri Mese / Anno / All-Time, anello win rate, barre per superficie, avversari frequenti.
 - **Storico**: raggruppato per mese, filtri per superficie ed esito, ricerca avversario, scheda dettaglio per ogni match.
