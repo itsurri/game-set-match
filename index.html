@@ -391,7 +391,7 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
@@ -410,10 +410,10 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 window.firebase = {
   auth: getAuth(fbApp), db: getDatabase(fbApp),
-  GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+  GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   onAuthStateChanged, signOut, ref, get, set
 };
-window.firebase.getRedirectResult(window.firebase.auth).catch(()=>{});
+window.firebase.getRedirectResult(window.firebase.auth).catch(err=>console.error('[gsm] redirect result error',err));
 window.dispatchEvent(new Event('gsm-fb-ready'));
 </script>
 <script>
@@ -456,7 +456,14 @@ function initCloud(){
 function cloudLogin(){
   const fb=window.firebase;
   if(!fb){flash('Servizio non disponibile, riprova tra poco');return;}
-  fb.signInWithRedirect(fb.auth, new fb.GoogleAuthProvider());
+  fb.signInWithPopup(fb.auth, new fb.GoogleAuthProvider()).catch(err=>{
+    console.error('[gsm] login error',err);
+    if(err&&(err.code==='auth/popup-blocked'||err.code==='auth/cancelled-popup-request'||err.code==='auth/operation-not-supported-in-this-environment')){
+      fb.signInWithRedirect(fb.auth, new fb.GoogleAuthProvider());
+    }else if(err&&err.code!=='auth/popup-closed-by-user'){
+      flash('Accesso non riuscito ('+(err&&err.code||'errore')+')');
+    }
+  });
 }
 function cloudLogout(){
   const fb=window.firebase;
