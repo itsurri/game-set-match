@@ -752,6 +752,26 @@ function myName(){
   const p=S.profile;
   return [p.name,p.surname].filter(Boolean).join(' ').trim();
 }
+/* Avversario: nome e cognome separati. Le partite vecchie hanno un campo unico,
+   quindi provo a separare l'iniziale puntata ("M. Rossi", "Marusich M."). */
+function oppParts(m){
+  if(m&&m.oppFirst!==undefined)return{first:(m.oppFirst||'').trim(),last:(m.opponent||'').trim()};
+  const t=((m&&m.opponent)||'').trim();
+  let x=t.match(/^([A-Za-zÀ-ÿ]\.)\s+(.+)$/);      // "M. Rossi"
+  if(x)return{first:x[1],last:x[2]};
+  x=t.match(/^(.+?)\s+([A-Za-zÀ-ÿ]\.)$/);          // "Marusich M."
+  if(x)return{first:x[2],last:x[1]};
+  return{first:'',last:t};
+}
+function oppFull(m){const p=oppParts(m);return [p.first,p.last].filter(Boolean).join(' ')||'Avversario';}
+function oppLast(m){return oppParts(m).last||'Avversario';}
+/* il raggruppamento (testa a testa, avversari frequenti) usa il cognome */
+function oppKey(m){return oppParts(m).last.trim().toLowerCase();}
+function oppDisplay(key){
+  const k=(key||'').trim().toLowerCase();
+  const m=sorted().find(x=>oppKey(x)===k);
+  return m?oppFull(m):(key||'Avversario');
+}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function sorted(){return S.matches.slice().sort((x,y)=>(y.date+ (y.time||'')).localeCompare(x.date+(x.time||'')));}
 
@@ -952,7 +972,7 @@ function render(){
     case 'prof':   top=barTitle('Profilo');            h=vProf(); break;
     case 'form':   top=barBack(draft&&draft.id?'Modifica partita':'Nuova partita'); h=vForm(); break;
     case 'detail': top=barBack('Dettaglio match');     h=vDetail(view.p); break;
-    case 'opp':    top=barBack(view.p||'Avversario');  h=vOpp(view.p); break;
+    case 'opp':    top=barBack(oppDisplay(view.p));    h=vOpp(view.p); break;
   }
   document.getElementById('topbar').innerHTML='<div class="tbrow">'+top+'</div>';
   v.innerHTML='<div class="fade">'+h+'</div>';
@@ -1099,7 +1119,7 @@ function mrow(m){
       <div class="res ${resClass(o)}">${resLetter(o)}</div>
       <div class="mid">
         <div class="mtop">
-          <div class="opp">${esc(m.opponent||'Avversario')}</div>
+          <div class="opp">${esc(oppFull(m))}</div>
           <div class="score num">${sc}</div>
         </div>
         <div class="sub">${sub}</div>
@@ -1145,13 +1165,13 @@ function vStats(){
 
   /* avversari frequenti → testa a testa */
   const byOpp={};
-  list.forEach(m=>{const o=(m.opponent||'—').trim();(byOpp[o]=byOpp[o]||[]).push(m)});
+  list.forEach(m=>{const k=oppKey(m)||'—';(byOpp[k]=byOpp[k]||[]).push(m)});
   const tops=Object.entries(byOpp).sort((a,b)=>b[1].length-a[1].length).slice(0,10);
   if(tops.length){
     h+=`<section class="card"><div class="clabel">Avversari frequenti</div>`;
     tops.forEach(([o,ms])=>{const rr=record(ms);
       h+=`<div class="statline tap" data-act="opp" data-n="${esc(o)}">
-        <div class="k" style="color:var(--txt);font-weight:800">${esc(o)}<small>${ms.length} partite</small></div>
+        <div class="k" style="color:var(--txt);font-weight:800">${esc(oppFull(ms[0]))}<small>${ms.length} partite</small></div>
         <div class="v" style="color:${rr.w>rr.l?'var(--win)':rr.l>rr.w?'var(--loss)':'var(--draw)'}">${recStr(rr)}</div>
         <div class="go">›</div></div>`;});
     h+=`</section>`;
@@ -1197,9 +1217,9 @@ function recordsCard(){
   let bm=null,bmw=-1;
   Object.entries(byM).forEach(([k,ms])=>{const r=record(ms);if(r.w>bmw){bmw=r.w;bm={k,r};}});
 
-  const byO={};all.forEach(m=>{const k=(m.opponent||'').trim();if(k)(byO[k]=byO[k]||[]).push(m)});
+  const byO={};all.forEach(m=>{const k=oppKey(m);if(k)(byO[k]=byO[k]||[]).push(m)});
   let vo=null,vow=-1;
-  Object.entries(byO).forEach(([k,ms])=>{const r=record(ms);if(r.w>vow){vow=r.w;vo={k,r};}});
+  Object.entries(byO).forEach(([k,ms])=>{const r=record(ms);if(r.w>vow){vow=r.w;vo={k,r,ms};}});
 
   const line=(k,sub,v,col)=>`<div class="statline"><div class="k">${k}${sub?`<small>${sub}</small>`:''}</div>
     <div class="v"${col?` style="color:${col}"`:''}>${v}</div></div>`;
@@ -1207,10 +1227,10 @@ function recordsCard(){
   let h=`<section class="card"><div class="clabel">Record personali</div>`;
   h+=line('Striscia di vittorie',streakWhen(sw)||'Nessuna',sw.n||'–','var(--win)');
   h+=line('Striscia di sconfitte',streakWhen(sl)||'Nessuna',sl.n||'–','var(--loss)');
-  if(bigW)h+=line('Vittoria più netta',esc(bigW.opponent||'Avversario')+' · '+dateLabel(bigW.date),scoreStr(bigW),'var(--win)');
-  if(bigL)h+=line('Sconfitta più netta',esc(bigL.opponent||'Avversario')+' · '+dateLabel(bigL.date),scoreStr(bigL),'var(--loss)');
+  if(bigW)h+=line('Vittoria più netta',esc(oppFull(bigW))+' · '+dateLabel(bigW.date),scoreStr(bigW),'var(--win)');
+  if(bigL)h+=line('Sconfitta più netta',esc(oppFull(bigL))+' · '+dateLabel(bigL.date),scoreStr(bigL),'var(--loss)');
   if(bm)h+=line('Miglior mese',monthLabel(bm.k+'-01'),bm.r.w+'V-'+bm.r.l+'S');
-  if(vo)h+=line('Avversario più battuto',esc(vo.k),vo.r.w+'V-'+vo.r.l+'S');
+  if(vo)h+=line('Avversario più battuto',esc(oppFull(vo.ms[0])),vo.r.w+'V-'+vo.r.l+'S');
   h+=`</section>`;
   return h;
 }
@@ -1239,9 +1259,9 @@ function calendarCard(){
 /* =========================================================
    VISTA — TESTA A TESTA
    ========================================================= */
-function vOpp(name){
-  const key=(name||'').trim().toLowerCase();
-  const ms=sorted().filter(m=>(m.opponent||'').trim().toLowerCase()===key);
+function vOpp(key){
+  const k=(key||'').trim().toLowerCase();
+  const ms=sorted().filter(m=>oppKey(m)===k);
   if(!ms.length)return `<div class="empty">${ball()}<h3>Nessuna partita</h3>
     <p>Non hai incontri registrati con questo avversario.</p></div>`;
 
@@ -1278,12 +1298,15 @@ function vOpp(name){
    VISTA — STORICO
    ========================================================= */
 function vHist(){
-  const opps=uniqueField('opponent').slice().sort((a,b)=>a.localeCompare(b));
+  // elenco avversari: una voce per cognome, etichettata col nome completo
+  const seen=new Map();
+  sorted().forEach(m=>{const k=oppKey(m);if(k&&!seen.has(k))seen.set(k,oppFull(m));});
+  const opps=[...seen.entries()].sort((a,b)=>a[1].localeCompare(b[1]));
   let h=`<div class="searchrow">
     <input class="field" id="q" placeholder="Cerca avversario…" value="${esc(filt.q)}" data-act="q">
     <select class="field h2hsel" id="h2h" aria-label="Testa a testa">
       <option value="">H2H</option>
-      ${opps.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}
+      ${opps.map(([k,v])=>`<option value="${esc(k)}">${esc(v)}</option>`).join('')}
     </select>
   </div>
   <div class="frow">
@@ -1303,7 +1326,7 @@ function vHist(){
 
   let list=sorted().filter(m=>filt.surf.has(m.surface));
   list=list.filter(m=>{const o=outcome(m);return o?filt.res.has(o):false;});
-  if(filt.q.trim())list=list.filter(m=>(m.opponent||'').toLowerCase().includes(filt.q.trim().toLowerCase()));
+  if(filt.q.trim())list=list.filter(m=>oppFull(m).toLowerCase().includes(filt.q.trim().toLowerCase()));
 
   if(!list.length)return h+`<div class="empty">${ball()}<h3>Nessuna partita</h3><p>Prova a cambiare i filtri.</p></div>`;
 
@@ -1358,8 +1381,8 @@ function vDetail(id){
   if(m.court)h+=`<div class="statline"><div class="k">Campo</div><div class="v" style="font-size:14px">${esc(m.court)}</div></div>`;
   h+=`<div class="statline"><div class="k">Superficie</div><div class="v" style="font-size:14px">${s.n}</div></div>`;
   if(m.duration)h+=`<div class="statline"><div class="k">Durata</div><div class="v" style="font-size:14px">${durLabel(m.duration)}</div></div>`;
-  if(m.opponent)h+=`<div class="statline tap" data-act="opp" data-n="${esc(m.opponent)}">
-    <div class="k">Testa a testa<small>Storico contro ${esc(m.opponent)}</small></div><div class="go">›</div></div>`;
+  if(oppKey(m))h+=`<div class="statline tap" data-act="opp" data-n="${esc(oppKey(m))}">
+    <div class="k">Testa a testa<small>Storico contro ${esc(oppFull(m))}</small></div><div class="go">›</div></div>`;
   h+=`</section>`;
 
   if(m.notes){
@@ -1379,7 +1402,7 @@ function newDraft(pre){
   const d=new Date();
   return Object.assign({
     id:null,date:d.toISOString().slice(0,10),time:'19:00',duration:60,result:null,
-    opponent:'',surface:'hard',court:'',sets:[{me:'',opp:'',tb:''}],
+    opponent:'',oppFirst:'',surface:'hard',court:'',sets:[{me:'',opp:'',tb:''}],
     notes:''
   },pre||{});
 }
@@ -1388,6 +1411,9 @@ function draftFrom(m){
   const o=outcome(m);
   const d=newDraft(JSON.parse(JSON.stringify(m)));
   d.result=o;
+  // se la partita è vecchia, separo nome e cognome per il form
+  const p=oppParts(m);
+  d.oppFirst=p.first;d.opponent=p.last;
   d.sets=dispSets(m).map(s=>{
     const o={me:String(s.a),opp:String(s.b),tb:s.tb||''};
     if(s.tbk)o.kind='tb';
@@ -1397,7 +1423,10 @@ function draftFrom(m){
 }
 function vForm(){
   const d=draft;
-  const opps=uniqueField('opponent'), courts=uniqueField('court');
+  const courts=uniqueField('court');
+  // suggerimenti presi dalle partite già registrate
+  const oppFirsts=[...new Set(sorted().map(m=>oppParts(m).first).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const oppLasts =[...new Set(sorted().map(m=>oppParts(m).last ).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
 
   let h=`<div class="fgroup">
     <label class="fl">Esito della partita</label>
@@ -1407,10 +1436,13 @@ function vForm(){
     </div>
   </div>
 
-  <div class="fgroup">
-    <label class="fl">Avversario</label>
-    <input class="field" data-f="opponent" list="opplist" value="${esc(d.opponent)}" placeholder="Inserisci solo il cognome" autocomplete="off">
-    <datalist id="opplist">${opps.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>
+  <div class="fgroup grid2">
+    <div><label class="fl">Nome avversario</label>
+      <input class="field" data-f="oppFirst" list="oppfirstlist" value="${esc(d.oppFirst||'')}" placeholder="Marco" autocomplete="off">
+      <datalist id="oppfirstlist">${oppFirsts.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist></div>
+    <div><label class="fl">Cognome</label>
+      <input class="field" data-f="opponent" list="opplist" value="${esc(d.opponent)}" placeholder="Rossi" autocomplete="off">
+      <datalist id="opplist">${oppLasts.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist></div>
   </div>
   <div class="fgroup">
     <label class="fl">Data</label>
@@ -1644,7 +1676,7 @@ document.addEventListener('click',e=>{
       const o=outcome(m);
       const box=document.getElementById('reveal');
       if(!box){
-        flash(resName(o)+' · '+(m.opponent||'Avversario')+' · '+scoreStr(m));
+        flash(resName(o)+' · '+oppFull(m)+' · '+scoreStr(m));
         haptic();break;
       }
       // ritoccando la stessa partita il riquadro si richiude
@@ -1653,7 +1685,7 @@ document.addEventListener('click',e=>{
       }
       box.className='reveal '+resClass(o);
       box.dataset.id=m.id;
-      box.innerHTML=`<span class="rtit">${o==='W'?'✓':o==='L'?'✕':'='} ${resName(o)}</span>${esc(m.opponent||'Avversario')} · ${scoreStr(m)} · ${dateFull(m.date)}`;
+      box.innerHTML=`<span class="rtit">${o==='W'?'✓':o==='L'?'✕':'='} ${resName(o)}</span>${esc(oppFull(m))} · ${scoreStr(m)} · ${dateFull(m.date)}`;
       haptic();break;
     }
     case 'hmy': hmYear=+t.dataset.k;render();break;
@@ -1750,10 +1782,11 @@ function saveMatch(){
   const sets=d.result==='L'
     ? raw.map(s=>{const o={me:s.opp,opp:s.me,tb:flipScore(s.tb)};if(s.kind)o.kind=s.kind;return o;})
     : raw;
-  if(!d.opponent.trim())d.opponent='Avversario';
+  if(!d.opponent.trim()&&!(d.oppFirst||'').trim()){flash('Manca il nome dell\'avversario');return;}
   const m={
     id:d.id||uid(),date:d.date,time:d.time,duration:+d.duration||60,result:d.result,
-    opponent:d.opponent.trim(),surface:d.surface,court:(d.court||'').trim(),
+    opponent:(d.opponent||'').trim(),oppFirst:(d.oppFirst||'').trim(),
+    surface:d.surface,court:(d.court||'').trim(),
     sets,notes:(d.notes||'').trim()
   };
   if(d.id){S.matches=S.matches.map(x=>x.id===d.id?m:x);}else{S.matches.push(m);}
@@ -1792,14 +1825,14 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rint=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 
 function loadDemo(){
-  // avversari inventati: alcuni col nome puntato, altri col solo cognome
+  // avversari inventati, con nome e cognome separati
   const rivali=[];
   const usati=new Set();
   while(rivali.length<8){
     const c=pick(D_COGN);
     if(usati.has(c))continue;
     usati.add(c);
-    rivali.push(Math.random()<.5 ? pick(D_NOMI).charAt(0)+'. '+c : c);
+    rivali.push({first:pick(D_NOMI),last:c});
   }
   const campi=[];
   while(campi.length<3){const c=pick(D_CAMPI);if(!campi.includes(c))campi.push(c);}
@@ -1824,9 +1857,10 @@ function loadDemo(){
         sets.push(tie?{me:meWin?7:6,opp:meWin?6:7,tb:meWin?'7-'+rint(2,5):rint(2,5)+'-7'}:{me:a,opp:b,tb:''});
       }
     }
+    const riv=pick(rivali);
     out.push({id:uid(),date:d.toISOString().slice(0,10),
       time:pick(ORARI.slice(30,44)),duration:pick(DURATE),result,
-      opponent:pick(rivali),surface:Math.random()<.6?'clay':'hard',
+      opponent:riv.last,oppFirst:riv.first,surface:Math.random()<.6?'clay':'hard',
       court:pick(campi),sets,notes:pick(D_NOTE)});
   }
   S.matches=out;
