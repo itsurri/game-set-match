@@ -647,6 +647,26 @@ function load(){
 function save(){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
+/* ── sistemazione una tantum delle partite caricate dal backup ──
+   Quelle 150 partite non avevano né orario scelto né campo, perché all'epoca
+   i due campi non esistevano ancora. Qui ricevono un orario reale, un'ora di
+   durata e, per il 2026, il campo di casa.
+   Si riconoscono dall'assenza di "duration": ogni partita registrata dal form
+   ce l'ha sempre, quindi non viene mai ritoccata. */
+const ORARI_REALI=['10:00','11:00','12:00','17:00','18:00','19:00','20:00','21:00'];
+function fixImported(){
+  let n=0;
+  (S.matches||[]).forEach(m=>{
+    if(m.duration)return;
+    m.time=ORARI_REALI[Math.floor(Math.random()*ORARI_REALI.length)];
+    m.duration=60;
+    if((m.date||'').slice(0,4)==='2026')m.court='Laurera 15A40';
+    n++;
+  });
+  if(n){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
+  return n;
+}
+
 /* =========================================================
    CLOUD SYNC (Firebase Auth + Realtime Database)
    ========================================================= */
@@ -704,6 +724,7 @@ function mergeFromCloud(remote){
   if(remote.profile)S.profile=Object.assign(S.profile,remote.profile);
   if(remote.theme)S.theme=remote.theme;
   localStorage.setItem(KEY,JSON.stringify(S));
+  fixImported();          // le partite arrivate dal cloud possono essere ancora da sistemare
   applyTheme();render();
 }
 window.addEventListener('gsm-fb-ready', initCloud);
@@ -1913,6 +1934,7 @@ go=function(n,p){
 };
 history.replaceState({v:view},'','');
 
+fixImported();
 render();
 </script>
 </body>
