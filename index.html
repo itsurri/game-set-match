@@ -176,7 +176,8 @@ main{
 
 /* ---------- menù Liquid Glass ---------- */
 nav.tabs{
-  position:fixed;left:14px;right:14px;bottom:calc(var(--safe-b) + 8px);z-index:60;
+  /* su iPhone si scende dentro parte dell'area sicura, restando sopra la gesture bar */
+  position:fixed;left:14px;right:14px;bottom:calc(var(--safe-b) * .45 + 8px);z-index:60;
   max-width:452px;margin:0 auto;
   display:flex;gap:10px;align-items:stretch;
 }
@@ -1719,40 +1720,73 @@ document.addEventListener('change',e=>{
   }
 });
 
-/* dati di esempio */
+/* =========================================================
+   DATI DI ESEMPIO — tutto inventato a caso, profilo compreso
+   ========================================================= */
+const D_NOMI=['Luca','Simone','Federico','Alessio','Riccardo','Tommaso','Gabriele','Stefano',
+  'Emanuele','Pietro','Lorenzo','Nicolò','Filippo','Edoardo','Samuele','Cristian'];
+const D_COGN=['Bertolini','Marchetti','Fiorentino','Vitali','Ranieri','Sartori','Pagani','Zanetti',
+  'Mancuso','Trevisan','Lombardi','Sacchetti','Belotti','Ravaglia','Nocera','Peluso','Grimaldi','Tosetto'];
+const D_CITTA=['Chieri','Moncalieri','Collegno','Grugliasco','Pinerolo','Alpignano','Nichelino',
+  'Orbassano','Carmagnola','Avigliana','Rivoli','Settimo Torinese'];
+const D_CAMPI=['Tennis Club Aurora','Circolo La Pineta','Green Set Arena','Sporting Ronchi',
+  'Tennis Bordo Po','Country Club Le Querce','Centro Sportivo Ibis'];
+const D_LIV=['4.NC','4.6','4.5','4.4','4.3','4.2','3.5','3.4','NC'];
+const D_NOTE=['Buona percentuale di prime, da migliorare la risposta sulla seconda.',
+  'Servizio in tilt nel secondo set, poi rientrato col dritto.',
+  'Troppi errori col rovescio lungolinea, meglio incrociare.',
+  'Partita lunga e fisica, tenuta ottima nel finale.',
+  'Sceso male a rete, da lavorare sulle volée basse.',
+  '','','',''];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const rint=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+
 function loadDemo(){
-  const names=['M. Rossi','L. Bianchi','A. Conti','D. Ferrari','S. Greco','P. Marino','G. Costa'];
-  const surf=['hard','clay','clay','hard','clay','hard','clay'];
-  const courts=['Laurera 15A40','Momy Sport Village','Laurera 15A40','Centrale'];
-  const notes=['Buona percentuale di prime, da migliorare la risposta sulla seconda.',
-               'Servizio in tilt nel secondo set, poi rientrato col dritto.','',''];
+  // avversari inventati: alcuni col nome puntato, altri col solo cognome
+  const rivali=[];
+  const usati=new Set();
+  while(rivali.length<8){
+    const c=pick(D_COGN);
+    if(usati.has(c))continue;
+    usati.add(c);
+    rivali.push(Math.random()<.5 ? pick(D_NOMI).charAt(0)+'. '+c : c);
+  }
+  const campi=[];
+  while(campi.length<3){const c=pick(D_CAMPI);if(!campi.includes(c))campi.push(c);}
+
   const out=[];const today=new Date();
-  for(let i=0;i<24;i++){
-    const d=new Date(today);d.setDate(d.getDate()-i*9-Math.floor(Math.random()*4));
+  const n=rint(18,30);
+  for(let i=0;i<n;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i*rint(6,12));
     const roll=Math.random();
     const sets=[];let result;
     if(roll<.08){
-      const v=6+Math.floor(Math.random()*3);
+      const v=rint(6,8);
       sets.push({me:v,opp:v,tb:''});result='D';
     }else{
-      const win=roll<.58;result=win?'W':'L';
-      const n=Math.random()<.35?3:2;
-      for(let k=0;k<n;k++){
-        const meWin=(k<2)?(k===0?win:(n===3?!win:win)):win;
-        const a=meWin?6:Math.floor(Math.random()*5);
-        const b=meWin?Math.floor(Math.random()*5):6;
+      const win=Math.random()<.55;result=win?'W':'L';
+      const ns=Math.random()<.35?3:2;
+      for(let k=0;k<ns;k++){
+        const meWin=(k<2)?(k===0?win:(ns===3?!win:win)):win;
+        const a=meWin?6:rint(0,4);
+        const b=meWin?rint(0,4):6;
         const tie=Math.random()<.18;
-        sets.push(tie?{me:meWin?7:6,opp:meWin?6:7,tb:meWin?'7-5':'5-7'}:{me:a,opp:b,tb:''});
+        sets.push(tie?{me:meWin?7:6,opp:meWin?6:7,tb:meWin?'7-'+rint(2,5):rint(2,5)+'-7'}:{me:a,opp:b,tb:''});
       }
     }
-    out.push({id:uid(),date:d.toISOString().slice(0,10),time:ORARI[38+(i%4)],duration:DURATE[i%DURATE.length],
-      result,opponent:names[i%names.length],surface:surf[i%surf.length],court:courts[i%courts.length],sets,
-      notes:notes[i%notes.length]});
+    out.push({id:uid(),date:d.toISOString().slice(0,10),
+      time:pick(ORARI.slice(30,44)),duration:pick(DURATE),result,
+      opponent:pick(rivali),surface:Math.random()<.6?'clay':'hard',
+      court:pick(campi),sets,notes:pick(D_NOTE)});
   }
   S.matches=out;
   if(!S.profile.name){
-    S.profile=Object.assign(S.profile,{name:'Andrea',surname:'Dellerba',hand:'Mancino',
-      age:'30',height:'167',city:'Rivalta di Torino',level:'4.NC',nat:'IT'});
+    S.profile=Object.assign(S.profile,{
+      name:pick(D_NOMI), surname:pick(D_COGN),
+      hand:Math.random()<.8?'Destro':'Mancino',
+      age:String(rint(18,55)), height:String(rint(165,195)),
+      city:pick(D_CITTA), level:pick(D_LIV), nat:pick(NAZ)[0]
+    });
   }
   save();go('home');flash('Dati di esempio caricati');
 }
