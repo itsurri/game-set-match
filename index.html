@@ -469,28 +469,28 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 .btn.danger{background:rgba(255,92,116,.12);border:1px solid rgba(255,92,116,.3);color:var(--loss);box-shadow:none}
 .btn.sm{padding:12px;font-size:13px;border-radius:15px}
 
-.resultbanner{
-  border-radius:18px;padding:14px;text-align:center;font-size:14px;font-weight:800;letter-spacing:.06em;
-  margin-bottom:16px;border:1px solid transparent;text-transform:uppercase;
-}
-.resultbanner.w{background:rgba(46,209,122,.12);color:var(--win);border-color:rgba(46,209,122,.3)}
-.resultbanner.l{background:rgba(255,92,116,.1);color:var(--loss);border-color:rgba(255,92,116,.28)}
-.resultbanner.d{background:rgba(245,201,58,.12);color:var(--draw);border-color:rgba(245,201,58,.32)}
-.resultbanner.n{background:var(--field);color:var(--txt-3);border-color:var(--field-brd)}
-
 /* dettaglio match — griglia stile tabellone televisivo */
 .mhead{border-radius:var(--radius);overflow:hidden;margin-bottom:13px;color:#fff}
 .mh-inner{background:rgba(6,10,6,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+/* data e orario: una riga sola, centrata su tutta la larghezza */
 .mh-meta{
-  padding:13px 16px 11px;font-size:9.5px;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(255,255,255,.8);border-bottom:1px solid rgba(255,255,255,.14);
+  padding:16px 16px 14px;text-align:center;
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  font-size:12.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:#fff;border-bottom:1px solid rgba(255,255,255,.14);
 }
-.mh-meta .l1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mh-meta .l2{margin-top:4px;color:rgba(255,255,255,.56)}
-.mh-meta i{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.4);display:block;flex:none}
+.mh-meta i{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.45);display:block;flex:none}
 .mh-grid{padding:4px 16px 14px}
-.mh-hd{display:flex;gap:7px;justify-content:flex-end;padding:10px 0 6px}
-.mh-hd span{width:34px;text-align:center;font-size:8.5px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.5)}
+/* il circolo occupa lo spazio libero a sinistra delle colonne dei set,
+   allineato col testo dei nomi che stanno sotto */
+.mh-hd{display:flex;align-items:center;gap:12px;padding:12px 0 7px}
+.mh-hd .club{
+  flex:1;min-width:0;padding-left:14px;
+  font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.66);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mh-hd .cols{display:flex;gap:7px;flex:none}
+.mh-hd .cols span{width:34px;text-align:center;font-size:8.5px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.5)}
 .mh-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid rgba(255,255,255,.13)}
 .mh-nm{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
 .mh-nm .bar{width:4px;height:36px;border-radius:2px;background:rgba(255,255,255,.26);flex:none}
@@ -619,7 +619,7 @@ const NAZ=[['IT','Italia'],['AL','Albania'],['AR','Argentina'],['AT','Austria'],
   ['ES','Spagna'],['US','Stati Uniti'],['SE','Svezia'],['CH','Svizzera'],['TN','Tunisia'],['UA','Ucraina']];
 
 const blankProfile=()=>({name:'',surname:'',hand:'Destro',level:'',avatar:'',age:'',nat:'IT',city:'',height:''});
-const blank=()=>({profile:blankProfile(),matches:[],theme:''});
+const blank=()=>({profile:blankProfile(),matches:[],theme:'',dataFix:0});
 let S=load();
 let view={n:'home'};
 let draft=null;
@@ -648,22 +648,33 @@ function save(){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
 /* ── sistemazione una tantum delle partite caricate dal backup ──
-   Quelle 150 partite non avevano né orario scelto né campo, perché all'epoca
-   i due campi non esistevano ancora. Qui ricevono un orario reale, un'ora di
-   durata e, per il 2026, il campo di casa.
-   Si riconoscono dall'assenza di "duration": ogni partita registrata dal form
-   ce l'ha sempre, quindi non viene mai ritoccata. */
+   Quelle 150 partite non avevano orario scelto, durata né campo: all'epoca i
+   campi non esistevano ancora. Qui ricevono un orario reale, un'ora di durata
+   e il circolo giusto per anno e superficie.
+   Si riconoscono dall'id (quelle del backup iniziano per "imp") oppure
+   dall'assenza della durata: le partite registrate dal form non si toccano.
+   Gira una sola volta: il numero di versione viaggia col resto dei dati. */
+const DATA_FIX=2;
 const ORARI_REALI=['10:00','11:00','12:00','17:00','18:00','19:00','20:00','21:00'];
+const CIRCOLI_TERRA=['Momy Sport Village','Monviso Sporting Club','Fornaci','Circoletto Rosso',
+                     'Trecate 46','Nord Tennis','Master Club'];
+const CIRCOLI_CEMENTO=['De Coubertin','Momy Sport Village'];
 function fixImported(){
+  if((S.dataFix||0)>=DATA_FIX)return 0;
+  const a=arr=>arr[Math.floor(Math.random()*arr.length)];
   let n=0;
   (S.matches||[]).forEach(m=>{
-    if(m.duration)return;
-    m.time=ORARI_REALI[Math.floor(Math.random()*ORARI_REALI.length)];
-    m.duration=60;
-    if((m.date||'').slice(0,4)==='2026')m.court='Laurera 15A40';
+    const daBackup=/^imp/.test(m.id||'')||!m.duration;
+    if(!daBackup)return;
+    if(ORARI_REALI.indexOf(m.time)<0)m.time=a(ORARI_REALI);
+    if(!m.duration)m.duration=60;
+    const y=(m.date||'').slice(0,4);
+    if(y==='2026')m.court='Laurera 15A40';
+    else if(y==='2024'||y==='2025')m.court=a(m.surface==='clay'?CIRCOLI_TERRA:CIRCOLI_CEMENTO);
     n++;
   });
-  if(n){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
+  S.dataFix=DATA_FIX;
+  localStorage.setItem(KEY,JSON.stringify(S));cloudPush();
   return n;
 }
 
@@ -702,7 +713,8 @@ function cloudPush(){
   cloudTimer=setTimeout(()=>{
     const fb=window.firebase;
     fb.set(fb.ref(fb.db,'users/'+cloudUser.uid),
-      {profile:S.profile, matches:S.matches, theme:S.theme, updatedAt:Date.now()}).catch(()=>{});
+      {profile:S.profile, matches:S.matches, theme:S.theme, dataFix:S.dataFix||0,
+       updatedAt:Date.now()}).catch(()=>{});
   },800);
 }
 async function cloudPull(){
@@ -723,6 +735,7 @@ function mergeFromCloud(remote){
   S.matches=Object.values(map);
   if(remote.profile)S.profile=Object.assign(S.profile,remote.profile);
   if(remote.theme)S.theme=remote.theme;
+  S.dataFix=Math.max(S.dataFix||0, remote.dataFix||0);
   localStorage.setItem(KEY,JSON.stringify(S));
   fixImported();          // le partite arrivate dal cloud possono essere ancora da sistemare
   applyTheme();render();
@@ -1376,7 +1389,7 @@ function vHist(){
 function vDetail(id){
   const m=S.matches.find(x=>x.id===id);
   if(!m)return `<div class="empty"><h3>Match non trovato</h3></div>`;
-  const s=SURF[m.surface]||SURF.hard,o=outcome(m),[a,b]=setsWon(m);
+  const s=SURF[m.surface]||SURF.hard,o=outcome(m);
   // il vincitore del match sta sempre nella riga in alto
   const flip=o==='L';
   const ds=dispSets(m);                    // .a = riga alta, .b = riga bassa
@@ -1385,7 +1398,6 @@ function vDetail(id){
   const oppRow={f:p.first||'',  l:p.last||'Avversario'};
   const rowTop   = flip?oppRow:meRow;
   const rowBottom= flip?meRow:oppRow;
-  const setsTop  = flip?b:a, setsBottom = flip?a:b;
 
   let n=0;
   const heads=ds.map(x=>x.tbk?'TB':'SET '+(++n));
@@ -1406,11 +1418,13 @@ function vDetail(id){
   let h=`<section class="mhead s-${s.cls}">
     <div class="mh-inner">
       <div class="mh-meta">
-        <div class="l1"><span>${dateFull(m.date)}</span>${m.time?`<i></i><span>${timeRange(m)}</span>`:''}</div>
-        ${m.court?`<div class="l2">${esc(m.court)}</div>`:''}
+        <span>${dateFull(m.date)}</span>${m.time?`<i></i><span>${timeRange(m)}</span>`:''}
       </div>
       <div class="mh-grid">
-        <div class="mh-hd">${heads.map(t=>`<span>${t}</span>`).join('')}</div>
+        <div class="mh-hd">
+          <div class="club">${m.court?esc(m.court):''}</div>
+          <div class="cols">${heads.map(t=>`<span>${t}</span>`).join('')}</div>
+        </div>
         <div class="mh-row ${o==='D'?'':'win'}">
           ${nameBlock(rowTop)}<div class="mh-sc">${cells('a')}</div>
         </div>
@@ -1420,10 +1434,6 @@ function vDetail(id){
       </div>
     </div>
   </section>`;
-
-  const setLine=o==='D'?'':` · ${setsTop} set a ${setsBottom}`;
-  h+=`<div class="resultbanner ${resClass(o)||'n'}">${
-    o==='W'?'✓ Vittoria'+setLine:o==='L'?'✕ Sconfitta'+setLine:o==='D'?'= Pareggio':'Risultato incompleto'}</div>`;
 
   h+=`<section class="card"><div class="clabel">Dettagli</div>`;
   if(m.court)h+=`<div class="statline"><div class="k">Campo</div><div class="v" style="font-size:14px">${esc(m.court)}</div></div>`;
