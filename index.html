@@ -658,6 +658,45 @@ const ORARI_REALI=['10:00','11:00','12:00','17:00','18:00','19:00','20:00','21:0
 const CIRCOLI_TERRA=['Momy Sport Village','Monviso Sporting Club','Fornaci','Circoletto Rosso',
                      'Trecate 46','Nord Tennis','Master Club'];
 const CIRCOLI_CEMENTO=['De Coubertin','Momy Sport Village'];
+/* ── nomi degli avversari ──
+   Le partite del backup avevano solo il cognome. Qui arriva il nome di battesimo.
+   Non serve un marcatore: una volta scritto il nome, la partita viene saltata,
+   e le partite dove il nome l'hai messo tu non vengono mai toccate. */
+const NOMI_AVVERSARI={
+  "ambrosi":"Stefano","amodeo":"Davide","armentano":"Marco","battaglino":"Fabrizio",
+  "bellone":"Edoardo","bertero":"Paolo","bianchini":"Bruno","birro":"Valter",
+  "bonello":"Paolo","borda":"Enzo","calitri":"Claudio","calo":"Marco",
+  "cambareri":"Rocco","carchia":"Giuseppe","cardella":"Giuseppe","cileo":"Pierluigi",
+  "correale":"Caterina","d'avanzo":"Raffaele","de rosa":"Raffaele","delfino":"Daniele",
+  "dellerba":"Michele","di maria":"Andrea","esposito":"Davide","fabris":"Alessandro",
+  "federico":"Andrea","fornaro":"Edoardo","giuffrida":"Simone","goria":"Luca",
+  "la rocca":"Roberto","lavilla":"Alessandro","leto":"Simone","longo":"Simone",
+  "marabotto":"Adolfo","marusich":"Mattia","mazza":"Giuseppe","morello":"Diego",
+  "morino":"Fabrizio","morra":"Andrea","moscaritolo":"Fabrizio","murati":"Michelangelo",
+  "musarella":"Giorgio","pacileo":"Lino","petrazzi":"Mirko","picco":"Giorgio",
+  "piva":"Stefano","pontone":"Riccardo","ponzo":"Andrea","porporato":"Riccardo",
+  "porri":"Andrea","rinaldi":"Edoardo","rolle":"Stefano","rosotto":"Giovanni",
+  "ruffinello":"Federico","ruggiero":"Simone","santarelli":"Francesco","schaffner":"Thomas",
+  "sembenelli":"Riccardo","sicco":"Varner","sollazzo":"Paolo","tarricone":"Francesco",
+  "testa":"Daniele","uliano":"Guido","vai":"Dario","valentina":"Valentian",
+  "villani":"Michele","visconti":"Alessandro","voltarel":"Michele","vuerich":"Max",
+  "zito":"Fabio"
+};
+function fixNames(){
+  let n=0;
+  (S.matches||[]).forEach(m=>{
+    if((m.oppFirst||'').trim())return;        // nome già presente: non lo tocco
+    const p=oppParts(m);
+    const nome=NOMI_AVVERSARI[p.last.trim().toLowerCase()];
+    if(!nome)return;
+    m.oppFirst=nome;
+    m.opponent=p.last;                        // ripulisce anche "Marusich M."
+    n++;
+  });
+  if(n){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
+  return n;
+}
+
 function fixImported(){
   const a=arr=>arr[Math.floor(Math.random()*arr.length)];
   let n=0;
@@ -735,7 +774,7 @@ function mergeFromCloud(remote){
   if(remote.profile)S.profile=Object.assign(S.profile,remote.profile);
   if(remote.theme)S.theme=remote.theme;
   localStorage.setItem(KEY,JSON.stringify(S));
-  fixImported();          // le partite arrivate dal cloud possono essere ancora da sistemare
+  fixImported();fixNames();   // i dati arrivati dal cloud possono essere ancora da sistemare
   applyTheme();render();
 }
 window.addEventListener('gsm-fb-ready', initCloud);
@@ -1963,7 +2002,7 @@ go=function(n,p){
 };
 history.replaceState({v:view},'','');
 
-fixImported();
+fixImported();fixNames();
 render();
 </script>
 </body>
