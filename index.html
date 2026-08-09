@@ -1185,7 +1185,7 @@ function mrow(m){
   const o=outcome(m),s=SURF[m.surface]||SURF.hard;
   const sc=dispSets(m).map(x=>
     `<div class="st ${x.cls}">${x.a}-${x.b}${
-      x.tbk?'<i class="tbm">TB</i>'
+      x.tbk?'<i class="tbm">ST</i>'
            :(x.tb?`<span class="tb">${esc(String(x.tb).split('-')[0]||'')}</span>`:'')
     }</div>`).join('');
   // niente superficie nel testo: la dice già la barra colorata a sinistra
@@ -1435,7 +1435,7 @@ function vDetail(id){
   const rowBottom= flip?meRow:oppRow;
 
   let n=0;
-  const heads=ds.map(x=>x.tbk?'TB':'SET '+(++n));
+  const heads=ds.map(x=>x.tbk?'ST':'SET '+(++n));
   // i punti del tie-break si mostrano in apice su chi ha perso quel set
   const tbLow=x=>{
     if(!x.tb)return null;
@@ -1574,7 +1574,7 @@ function vForm(){
     // il campo tie-break interno non ha senso su una riga che è già un tie-break
     const tb=!isTb&&((+s.me===7&&+s.opp===6)||(+s.me===6&&+s.opp===7)||s.tb);
     h+=`<div class="setrow">
-      <div class="lbl${isTb?' tbl':''}">${isTb?'TB':'Set '+setNo}</div>
+      <div class="lbl${isTb?' tbl':''}">${isTb?'ST':'Set '+setNo}</div>
       <div class="stepper">
         <button data-act="stp" data-i="${i}" data-s="me" data-d="-1">−</button>
         <input class="num" inputmode="numeric" maxlength="2" data-sf="me" data-i="${i}" value="${esc(s.me)}" placeholder="–">
@@ -1592,10 +1592,10 @@ function vForm(){
   });
   h+=`</div>
   <div class="fhint">Scrivi sempre i punti del vincitore per primi (es. 6-4), ci pensa l'app a metterli dalla parte giusta.
-  Il tie-break può finire ai 7 o ai 10, scrivi il punteggio che è uscito.</div>`;
+  Il super tie-break può finire ai 10, scrivi il punteggio che è uscito.</div>`;
   if(d.sets.length<5)h+=`<div class="grid2" style="margin-bottom:16px">
     <button class="btn ghost sm" data-act="addset">+ Set</button>
-    <button class="btn ghost sm" data-act="addtb">+ Tie break</button>
+    <button class="btn ghost sm" data-act="addtb">+ Super tie break</button>
   </div>`;
 
   h+=`<div class="fgroup"><label class="fl">Note tattiche</label>
