@@ -100,8 +100,6 @@ main{
   display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
   background:linear-gradient(to bottom,var(--bg) 76%,transparent);
 }
-.topbar{transition:padding-top .35s cubic-bezier(.2,1,.3,1)}
-body.pilled .topbar{padding-top:calc(var(--safe-t) + 54px)}
 .topbar h1{margin:0;font-size:30px;font-weight:400;font-family:var(--f-display);letter-spacing:.01em}
 .topbar .sub{font-size:12.5px;color:var(--txt-2);font-weight:600;letter-spacing:.02em}
 .iconbtn{
@@ -214,6 +212,8 @@ nav.tabs .wrap{
 .chip.on{background:var(--optic);border-color:var(--optic);color:#0F1508}
 .chip.on.w{background:var(--win);border-color:var(--win);color:#04170D}
 .chip.on.l{background:var(--loss);border-color:var(--loss);color:#2A0409}
+.chip.on.clay{background:var(--clay);border-color:var(--clay);color:#2A0904}
+.chip.on.hard{background:var(--hard);border-color:var(--hard);color:#EAF2FF}
 
 /* surface badges */
 .sbadge{
@@ -242,10 +242,12 @@ nav.tabs .wrap{
 .res.l{background:rgba(240,82,107,.16);color:var(--loss)}
 .mrow .mid{flex:1;min-width:0}
 .mrow .opp{font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .opp.w{color:var(--win)}
+.mrow .opp.l{color:var(--loss)}
 .mrow .sub{font-size:11.5px;color:var(--txt-3);font-weight:600;margin-top:2px;display:flex;gap:7px;align-items:center}
 .score{display:flex;gap:7px;align-items:center;font-weight:800;font-size:15px}
-.score .st{position:relative}
-.score .st.lost{color:var(--txt-3);font-weight:700}
+.score .st{position:relative;color:var(--win)}
+.score .st.lost{color:var(--loss);font-weight:700}
 .score .tb{position:absolute;top:-6px;right:-8px;font-size:9.5px;color:var(--txt-3);font-weight:700}
 
 /* charts */
@@ -273,12 +275,14 @@ nav.tabs .wrap{
 /* forms */
 label.fl{display:block;font-size:11.5px;font-weight:800;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em;margin:0 0 7px 3px}
 .field{
-  width:100%;padding:13px 14px;border-radius:15px;background:var(--field);
+  width:100%;min-width:0;padding:13px 14px;border-radius:15px;background:var(--field);
   border:1px solid var(--field-brd);color:var(--txt);outline:none;transition:.18s;
 }
+input.field[type="date"],input.field[type="time"]{padding-left:10px;padding-right:6px}
 .field:focus{border-color:var(--optic);box-shadow:0 0 0 3px rgba(217,245,43,.14)}
 textarea.field{min-height:96px;resize:none;line-height:1.45}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid2>div{min-width:0}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fgroup{margin-bottom:16px}
 
@@ -355,15 +359,6 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 .empty h3{margin:0 0 6px;font-size:16px;font-weight:800;color:var(--txt)}
 .empty p{margin:0;font-size:13.5px;line-height:1.5}
 
-/* live */
-.livesc{display:flex;align-items:stretch;gap:10px;margin:14px 0}
-.livecol{flex:1;background:var(--card);border:1px solid var(--card-brd);border-radius:20px;padding:14px 10px;text-align:center}
-.livecol .who{font-size:12px;font-weight:800;color:var(--txt-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.livecol .g{font-size:44px;font-weight:900;letter-spacing:-.05em;margin:4px 0 10px}
-.livecol .add{width:100%;padding:11px;border-radius:14px;background:var(--optic);color:#0F1508;font-weight:800;font-size:14px}
-.livecol .sub{width:100%;margin-top:6px;padding:7px;border-radius:12px;background:var(--field);color:var(--txt-3);font-size:12px;font-weight:700}
-.livesets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px}
-.livesets .b{padding:6px 11px;border-radius:10px;background:var(--field);font-size:13px;font-weight:800;color:var(--txt-2)}
 
 .fade{animation:fade .28s ease both}
 @keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
@@ -419,7 +414,7 @@ const SURF={
   hard  :{n:'Cemento', cls:'hard',  c:'--hard-2',  pk:'h'}
 };
 const SKEYS=Object.keys(SURF);
-const blank=()=>({profile:{name:'',hand:'Destro',level:'',avatar:''},matches:[],live:null,theme:''});
+const blank=()=>({profile:{name:'',hand:'Destro',level:'',avatar:''},matches:[],theme:''});
 let S=load();
 let view={n:'home'};
 let draft=null;      // match being edited/created
@@ -509,8 +504,6 @@ function setsWon(m){
   (m.sets||[]).forEach(s=>{ if(s.me>s.opp)a++; else if(s.opp>s.me)b++; });
   return [a,b];
 }
-// nel live il set in corso non conta ancora
-function liveSets(L){return setsWon({sets:L.sets.slice(0,-1)});}
 function outcome(m){
   const [a,b]=setsWon(m);
   if(a===b) return null;
@@ -620,7 +613,6 @@ const I={
   back:'<path d="M15 5l-7 7 7 7"/>',
   sun :'<circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>',
   moon:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>',
-  live:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
   edit:'<path d="M4 20h4L20 8l-4-4L4 16v4z"/>'
 };
 
@@ -639,12 +631,10 @@ function render(){
     case 'prof':   top=barTitle('Profilo','Impostazioni e dati',true); h=vProf(); break;
     case 'form':   top=barBack(draft&&draft.id?'Modifica partita':'Nuova partita'); h=vForm(); break;
     case 'detail': top=barBack('Dettaglio match'); h=vDetail(view.p); break;
-    case 'live':   top=barBack('Partita in corso'); h=vLive(); break;
   }
   document.getElementById('topbar').innerHTML=top;
   v.innerHTML='<div class="fade">'+h+'</div>';
   renderTabs();
-  updatePill();
 }
 function todayLine(){
   const d=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
@@ -653,7 +643,6 @@ function todayLine(){
 function barTitle(t,s,theme){
   return `<div><h1>${esc(t)}</h1><div class="sub">${esc(s)}</div></div>
   <div class="row">
-    ${S.live?`<button class="iconbtn" data-act="go" data-v="live" aria-label="Live"><svg viewBox="0 0 24 24">${I.live}</svg></button>`:''}
     ${theme?`<button class="iconbtn" data-act="theme" aria-label="Tema"><svg viewBox="0 0 24 24">${document.documentElement.dataset.theme==='dark'?I.sun:I.moon}</svg></button>`:''}
   </div>`;
 }
@@ -670,24 +659,13 @@ function renderTabs(){
   }).join('');
 }
 
-/* pill (Dynamic Island) */
+/* pill (Dynamic Island) — used for toast messages */
 let pillT=null;
-function updatePill(){
-  const p=document.getElementById('pill');
-  const liveOn=!!(S.live && view.n!=='live');
-  document.body.classList.toggle('pilled',liveOn);   // il contenuto scende sotto la Dynamic Island
-  if(liveOn){
-    const [a,b]=liveSets(S.live);
-    const cur=S.live.sets[S.live.sets.length-1];
-    p.querySelector('.lbl').innerHTML=`vs ${esc(S.live.opponent||'Avversario')} <span class="sc">${a}-${b} · ${cur.me}-${cur.opp}</span>`;
-    p.classList.add('on');
-  } else if(!pillT){ p.classList.remove('on'); }
-}
 function flash(msg){
   const p=document.getElementById('pill');
   p.querySelector('.lbl').innerHTML=esc(msg);
   p.classList.add('on');haptic();
-  clearTimeout(pillT);pillT=setTimeout(()=>{pillT=null;updatePill();},1900);
+  clearTimeout(pillT);pillT=setTimeout(()=>{pillT=null;p.classList.remove('on');},1900);
 }
 
 /* =========================================================
@@ -744,7 +722,7 @@ function vHome(){
   SKEYS.forEach(k=>{
     const rr=record(all.filter(m=>m.surface===k));
     if(!rr.tot)return;
-    h+=bar(SURF[k].n,`${rr.w}V · ${rr.l}S · ${rr.pct}%`,rr.pct,`var(${SURF[k].c})`);
+    h+=bar(SURF[k].n,`${rr.tot}P · ${rr.w}V · ${rr.l}S`,rr.pct,`var(${SURF[k].c})`);
   });
   h+=`</div></section>`;
 
@@ -764,7 +742,7 @@ function mrow(m){
     <div class="bar b-${s.cls}"></div>
     <div class="res ${o==='W'?'w':'l'}">${o||'–'}</div>
     <div class="mid">
-      <div class="opp">${esc(m.opponent||'Avversario')}</div>
+      <div class="opp ${o==='W'?'w':'l'}">${esc(m.opponent||'Avversario')}</div>
       <div class="sub">${relDay(m.date)} · ${s.n}${m.notes?' · 📝':''}</div>
     </div>
     <div class="score num">${sc}</div>
@@ -805,7 +783,7 @@ function vStats(){
   SKEYS.forEach(k=>{
     const rr=record(list.filter(m=>m.surface===k));
     if(!rr.tot)return;any=true;
-    h+=bar(`<span class="sbadge s-${SURF[k].cls}"><i></i>${SURF[k].n}</span>`,`${rr.w}V-${rr.l}S · ${rr.pct}%`,rr.pct,`var(${SURF[k].c})`);
+    h+=bar(`<span class="sbadge s-${SURF[k].cls}"><i></i>${SURF[k].n}</span>`,`${rr.tot}P · ${rr.w}V · ${rr.l}S`,rr.pct,`var(${SURF[k].c})`);
   });
   h+=(any?'':'<div style="color:var(--txt-3);font-size:13.5px">Nessuna superficie registrata.</div>')+`</div></section>`;
 
@@ -838,7 +816,7 @@ function vHist(){
   let h=`<div class="fgroup"><input class="field" id="q" placeholder="Cerca avversario…" value="${esc(filt.q)}" data-act="q"></div>
   <div class="chips" style="margin-bottom:10px">
     <button class="chip ${filt.surf==='all'?'on':''}" data-act="fsurf" data-k="all">Tutte</button>
-    ${SKEYS.map(k=>`<button class="chip ${filt.surf===k?'on':''}" data-act="fsurf" data-k="${k}">${SURF[k].n}</button>`).join('')}
+    ${SKEYS.map(k=>`<button class="chip ${SURF[k].cls} ${filt.surf===k?'on':''}" data-act="fsurf" data-k="${k}">${SURF[k].n}</button>`).join('')}
   </div>
   <div class="chips" style="margin-bottom:16px">
     <button class="chip ${filt.res==='all'?'on':''}" data-act="fres" data-k="all">Tutti</button>
@@ -973,49 +951,8 @@ function vForm(){
 
   <div style="height:18px"></div>
   <button class="btn" data-act="savematch">${d.id?'Salva modifiche':'Registra partita'}</button>
-  <div style="height:10px"></div>
-  ${d.id?'':`<button class="btn ghost sm" data-act="startlive">▶ Segui il match in diretta</button>`}
   `;
   return h;
-}
-
-/* =========================================================
-   VIEW — LIVE
-   ========================================================= */
-function vLive(){
-  const L=S.live;
-  if(!L)return `<div class="empty">${ball()}<h3>Nessun match live</h3>
-    <p>Avvia una partita in diretta dal form di registrazione.</p>
-    <div style="height:16px"></div><button class="btn" data-act="new">Nuova partita</button></div>`;
-  const [a,b]=liveSets(L),cur=L.sets[L.sets.length-1],s=SURF[L.surface]||SURF.hard;
-  const me=S.profile.name||'Io';
-  return `<section class="card" style="text-align:center;padding:18px">
-    <span class="sbadge s-${s.cls}"><i></i>${s.n}</span>
-    <div style="font-size:12px;color:var(--txt-3);font-weight:700;margin-top:10px;letter-spacing:.06em">SET VINTI</div>
-    <div style="font-size:38px;font-weight:900;letter-spacing:-.04em" class="num">${a} : ${b}</div>
-    <div class="livesets" style="margin-top:12px">
-      ${L.sets.map((x,i)=>`<div class="b">S${i+1} <span class="num">${x.me}-${x.opp}</span></div>`).join('')}
-    </div>
-  </section>
-  <div class="livesc">
-    <div class="livecol">
-      <div class="who">${esc(me)}</div>
-      <div class="g num">${cur.me}</div>
-      <button class="add" data-act="lg" data-s="me" data-d="1">+ GAME</button>
-      <button class="sub" data-act="lg" data-s="me" data-d="-1">−1</button>
-    </div>
-    <div class="livecol">
-      <div class="who">${esc(L.opponent||'Avversario')}</div>
-      <div class="g num">${cur.opp}</div>
-      <button class="add" data-act="lg" data-s="opp" data-d="1">+ GAME</button>
-      <button class="sub" data-act="lg" data-s="opp" data-d="-1">−1</button>
-    </div>
-  </div>
-  <button class="btn ghost sm" data-act="newset">+ Nuovo set</button>
-  <div style="height:10px"></div>
-  <button class="btn" data-act="endlive">Termina e registra</button>
-  <div style="height:10px"></div>
-  <button class="btn danger sm" data-act="cancellive">Annulla partita live</button>`;
 }
 
 /* =========================================================
@@ -1070,11 +1007,6 @@ function vProf(){
   </section>
   <div class="sec"><h2>Dati</h2></div>
   <section class="card">
-    <button class="btn ghost sm" data-act="export">Esporta backup (JSON)</button>
-    <div style="height:9px"></div>
-    <button class="btn ghost sm" data-act="import">Importa backup</button>
-    <input type="file" accept="application/json,.json" id="impfile" class="hidden">
-    <div style="height:9px"></div>
     ${S.matches.length?'':`<button class="btn ghost sm" data-act="demo">Carica dati di esempio</button><div style="height:9px"></div>`}
     <button class="btn danger sm" data-act="wipe">Cancella tutti i dati</button>
   </section>
@@ -1122,29 +1054,12 @@ document.addEventListener('click',e=>{
     case 'addset': draft.sets.push({me:'',opp:'',tb:''});render();break;
     case 'rmset': draft.sets.splice(+t.dataset.i,1);render();break;
     case 'savematch': saveMatch();break;
-    case 'startlive': startLive();break;
-    case 'lg':{
-      const cur=S.live.sets[S.live.sets.length-1],s=t.dataset.s;
-      cur[s]=Math.max(0,(+cur[s]||0)+ +t.dataset.d);save();haptic();render();break;
-    }
-    case 'newset': S.live.sets.push({me:0,opp:0,tb:''});save();render();break;
-    case 'endlive':{
-      const L=S.live;
-      draft=newDraft({opponent:L.opponent,surface:L.surface,
-        sets:L.sets.map(s=>({me:String(s.me),opp:String(s.opp),tb:s.tb||''}))});
-      S.live=null;save();go('form');flash('Match concluso · verifica i dati');break;
-    }
-    case 'cancellive':
-      if(confirm('Annullare la partita in corso?')){S.live=null;save();go('home');}
-      break;
     case 'demo': loadDemo();break;
     case 'pickav': document.getElementById('avfile').click();break;
     case 'login': cloudLogin();break;
     case 'logout':
       if(confirm('Disconnettere l\'account Google? I dati restano su questo dispositivo.'))cloudLogout();
       break;
-    case 'export': doExport();break;
-    case 'import': document.getElementById('impfile').click();break;
     case 'wipe':
       if(confirm('Cancellare TUTTI i dati? Operazione irreversibile.')){
         S=blank();save();go('home');flash('Dati cancellati');}
@@ -1208,11 +1123,6 @@ function saveMatch(){
   flash(o==='W'?'✓ Vittoria registrata':'Partita registrata');
   go('detail',m.id);
 }
-function startLive(){
-  S.live={opponent:(draft.opponent||'').trim(),surface:draft.surface,sets:[{me:0,opp:0,tb:''}],startedAt:Date.now()};
-  save();go('live');
-}
-
 /* avatar */
 document.addEventListener('change',e=>{
   if(e.target.id==='avfile'&&e.target.files[0]){
@@ -1227,26 +1137,7 @@ document.addEventListener('change',e=>{
       };img.src=r.result;
     };r.readAsDataURL(f);
   }
-  if(e.target.id==='impfile'&&e.target.files[0]){
-    const r=new FileReader();
-    r.onload=()=>{
-      try{
-        const o=JSON.parse(r.result);
-        if(!o||!Array.isArray(o.matches))throw 0;
-        if(!confirm('Sostituire i dati attuali con il backup?'))return;
-        S=Object.assign(blank(),o);save();go('home');flash('Backup importato');
-      }catch(err){alert('File non valido.');}
-    };r.readAsText(e.target.files[0]);
-  }
 });
-function doExport(){
-  const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(b);
-  a.download='my-tennis-backup-'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
-  flash('Backup esportato');
-}
 
 /* demo data */
 function loadDemo(){
