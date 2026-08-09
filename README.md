@@ -35,12 +35,18 @@ Display **Bebas Neue**, testo **Work Sans**. Tema chiaro e scuro entrambi suppor
 
 Gli esiti hanno tre colori in tutta l'app: **verde** vittoria, **giallo** pareggio, **rosso** sconfitta.
 
-- **Registrazione partita**: data, ora (19:00 / 19:30), durata da 1 a 4 ore, avversario, superficie (terra/cemento), **campo**, punteggio per set con tie-break, esito calcolato in tempo reale, note tattiche libere.
+**Come si inserisce il punteggio.** Prima scegli l'esito (Vittoria / Pareggio / Sconfitta), poi scrivi i game
+**sempre col vincitore per primo** — quindi `6-4` anche quando hai perso. L'app memorizza i game dalla parte
+giusta e li rimostra sempre con il vincitore davanti. Nelle partite vinte i set persi restano come li hai
+scritti (es. `2-6 6-4 7-4`), perché lì il vincitore del match sei tu.
+
+- **Registrazione partita**: esito, avversario, data, ora (ogni mezz'ora), durata da 1 a 4 ore, superficie (terra/cemento), **campo**, punteggio per set con tie-break, note tattiche libere.
 - **Suggerimenti**: avversari e campi già usati vengono proposti mentre scrivi, così non nascono doppioni.
-- **Home**: profilo con bandiera, dati anagrafici e livello; forma delle ultime 10 a colonne (tocca l'iniziale per il nome, l'esito per il risultato); superfici in una barra unica che sfuma verso il colore su cui hai giocato di più.
-- **Statistiche** (all-time): tre anelli — vittorie, set, game — rendimento per superficie, andamento delle ultime 10 con esiti toccabili.
-- **Testa a testa**: scheda per ogni avversario con bilancio, ultimi incontri, rendimento per superficie e lista completa.
-- **Record personali**: strisce di vittorie e sconfitte con il periodo, vittoria e sconfitta più nette col punteggio, miglior mese, avversario più battuto.
+- **Note sempre in vista**: ogni partita, in Home e nello Storico, porta in fondo alla card la riga `Note :`.
+- **Home**: profilo compatto con foto, nome e cognome, bandiera e dati anagrafici; forma delle ultime 20 (tocca un esito e il risultato compare in un riquadro sopra il titolo); superfici in una barra unica che sfuma verso il colore su cui hai giocato di più; ultime 5 partite.
+- **Statistiche** (all-time): tre anelli — vittorie, set, game — rendimento per superficie, andamento delle ultime 20 come grafico a linee tra game fatti (verde) e game subiti (rosso).
+- **Testa a testa**: scheda per ogni avversario con bilancio, ultimi incontri, superfici e lista completa. Ci arrivi dal tasto **H2H** nello Storico, dagli avversari frequenti o dal dettaglio partita.
+- **Record personali**: strisce di vittorie e sconfitte col periodo, vittoria e sconfitta più nette col punteggio, miglior mese, avversario più battuto.
 - **Calendario dell'anno**: una griglia giorno per giorno — verde vittoria, giallo pareggio, rosso sconfitta, spento riposo.
 - **Storico**: raggruppato per mese, filtri multipli per superficie ed esito, ricerca avversario, scheda dettaglio per ogni match.
-- **Profilo**: nome, mano, età, altezza, livello, nazionalità e città; foto ritagliabile con zoom e trascinamento.
+- **Profilo**: nome e cognome separati, mano, età, altezza, livello, nazionalità e città; foto ritagliabile con zoom e trascinamento.

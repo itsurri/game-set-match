@@ -47,6 +47,7 @@
   --card-brd:rgba(255,255,255,.14);
   --card-inner:rgba(217,245,43,.04);
   --txt:#EDF3E4;
+  --txt-soft:rgba(237,243,228,.74);
   --txt-2:#96A08C;
   --txt-3:#6B7566;
   --field:rgba(255,255,255,.055);
@@ -77,6 +78,7 @@ html[data-theme="light"]{
   --card-brd:rgba(16,28,14,.12);
   --card-inner:transparent;
   --txt:#101710;
+  --txt-soft:rgba(16,23,16,.68);
   --txt-2:#586052;
   --txt-3:#8B948A;
   --field:rgba(16,28,14,.045);
@@ -118,7 +120,7 @@ button{border:0;background:none;padding:0;cursor:pointer}
 /* ---------- shell ---------- */
 #app{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column}
 main{
-  flex:1;padding:0 18px calc(var(--safe-b) + 112px);
+  flex:1;padding:0 18px calc(var(--safe-b) + 120px);
   max-width:520px;width:100%;margin:0 auto;
 }
 
@@ -178,7 +180,7 @@ nav.tabs{
   position:relative;display:flex;padding:0;
   background:var(--glass-bg);
   -webkit-backdrop-filter:blur(38px) saturate(220%);backdrop-filter:blur(38px) saturate(220%);
-  border:.5px solid var(--glass-brd);border-radius:30px;
+  border:.5px solid var(--glass-brd);border-radius:32px;
   box-shadow:var(--glow),inset 0 1px 0 var(--glass-sheen),inset 0 -1px 0 rgba(0,0,0,.2);
   overflow:hidden;
 }
@@ -191,16 +193,16 @@ nav.tabs{
 .tabbtn{
   position:relative;z-index:1;flex:1;
   display:flex;align-items:center;justify-content:center;
-  color:var(--tab-off);padding:14px 0;border-radius:26px;transition:color .2s;
+  color:var(--tab-off);padding:18px 0;border-radius:28px;transition:color .2s;
 }
-.pill-side .tabbtn{flex:0 0 auto;padding:14px 18px}
+.pill-side .tabbtn{flex:0 0 auto;padding:18px 21px}
 .tabbtn.on{color:var(--tab-on)}
 .tabbtn.on::before{
-  content:'';position:absolute;inset:0;z-index:-1;border-radius:30px;
+  content:'';position:absolute;inset:0;z-index:-1;border-radius:32px;
   background:var(--tab-on-bg);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 2px rgba(0,0,0,.15);
 }
-.tabbtn svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tabbtn svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .tabbtn:active{transform:scale(.94)}
 .tab-plus{color:var(--tab-on)}
 .tab-plus svg{stroke-width:2.4}
@@ -221,24 +223,27 @@ nav.tabs{
 }
 .clabel em{font-style:normal;color:var(--txt-2);opacity:.75}
 .clabel b{font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.04em;color:var(--num);text-shadow:var(--glow-num);vertical-align:-1px}
-.sec{margin:24px 0 11px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
+.sec{margin:24px 0 11px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
 .sec h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:20px;letter-spacing:.05em;text-transform:uppercase}
 .sec .hint{font-size:10px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.12em;background:none}
 
 /* profilo / hero */
 .avatar{
-  width:78px;height:78px;border-radius:22px;flex:none;object-fit:cover;margin:0 auto;
+  width:78px;height:78px;border-radius:22px;flex:none;object-fit:cover;
   background:var(--field);border:1px solid var(--card-brd);
   display:grid;place-items:center;
   font-family:var(--f-display);font-size:32px;font-weight:400;
   color:var(--num);text-shadow:var(--glow-num);
 }
-.hero .name{font-family:var(--f-display);font-weight:400;font-size:30px;letter-spacing:.02em;margin:13px 0 6px}
-.hero .name .flag{font-family:var(--f-sans);font-size:22px;vertical-align:2px;margin-right:6px;text-shadow:none}
-.hero .meta{font-size:10.5px;color:var(--txt-2);font-weight:800;text-transform:uppercase;letter-spacing:.08em;line-height:1.7}
+.herotop{display:flex;align-items:center;justify-content:center;gap:16px}
+.heroname{text-align:left;min-width:0}
+.heroname .n1{font-family:var(--f-display);font-weight:400;font-size:25px;letter-spacing:.02em;line-height:1.02;color:var(--txt-2)}
+.heroname .n2{font-family:var(--f-display);font-weight:400;font-size:31px;letter-spacing:.02em;line-height:1.02}
+.heroname .flag{font-family:var(--f-sans);font-size:19px;vertical-align:2px;margin-left:7px;text-shadow:none}
+.hero .meta{font-size:10.5px;color:var(--txt-2);font-weight:800;text-transform:uppercase;letter-spacing:.08em;line-height:1.7;margin-top:13px}
 .hero .meta .lvl{color:var(--num);text-shadow:var(--glow-num)}
 
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;padding-top:14px;border-top:1px solid var(--card-brd)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px;padding-top:13px;border-top:1px solid var(--card-brd)}
 .kpi{padding:0 4px}
 .kpi + .kpi{border-left:1px solid var(--card-brd)}
 .kpi b{
@@ -265,7 +270,16 @@ nav.tabs{
 .chip.on.l{background:var(--loss);border-color:var(--loss);color:#2A0409}
 .chip.on.d{background:#F5C93A;border-color:#F5C93A;color:#2A1F00}
 .chip.on.clay{background:var(--clay);border-color:var(--clay);color:#2A0904}
-.chip.on.hard{background:var(--hard);border-color:var(--hard);color:#EAF2FF}
+.chip.on.hard{background:var(--hard);border-color:var(--hard);color:#04101F}
+
+/* ricerca + h2h */
+.searchrow{display:flex;gap:9px;margin-bottom:14px}
+.searchrow #q{flex:1 1 auto;min-width:0;width:auto}
+.searchrow .h2hsel{
+  flex:0 0 auto;width:76px;padding:13px 8px;font-size:12px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--num);text-align:center;text-align-last:center;
+  background-image:none;padding-right:8px;
+}
 
 /* filtri storico */
 .frow{display:flex;align-items:center;gap:9px;margin-bottom:9px}
@@ -283,17 +297,17 @@ nav.tabs{
 .s-clay{background:linear-gradient(135deg,var(--clay),var(--clay-2))}
 .s-hard{background:linear-gradient(135deg,var(--hard),var(--hard-2))}
 
-/* riga partita */
-.mrow{
-  display:flex;align-items:center;gap:11px;padding:13px 14px;
-  background:var(--card-solid);border:1px solid var(--card-brd);border-radius:18px;margin-bottom:9px;
-  position:relative;overflow:hidden;text-align:left;
+/* card partita (riga + note) */
+.mcard{
+  background:var(--card-solid);border:1px solid var(--card-brd);border-radius:18px;
+  margin-bottom:9px;position:relative;overflow:hidden;
   box-shadow:inset 0 0 30px var(--card-inner);
 }
-.mrow:active{transform:scale(.985)}
-.mrow .bar{position:absolute;left:0;top:0;bottom:0;width:3px}
+.mcard:active{transform:scale(.985)}
+.mcard .bar{position:absolute;left:0;top:0;bottom:0;width:3px;z-index:1}
 .b-clay{background:linear-gradient(var(--clay-2),var(--clay))}
 .b-hard{background:linear-gradient(var(--hard-2),var(--hard))}
+.mrow{display:flex;align-items:center;gap:11px;padding:13px 14px;text-align:left}
 .mrow .res{
   width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;margin-left:3px;
   font-family:var(--f-display);font-size:16px;font-weight:400;
@@ -302,26 +316,37 @@ nav.tabs{
 .res.l,.fres.l,.fdot.l{background:rgba(255,92,116,.11);color:var(--loss);border:1px solid rgba(255,92,116,.38)}
 .res.d,.fres.d,.fdot.d{background:rgba(245,201,58,.14);color:var(--draw);border:1px solid rgba(245,201,58,.4)}
 .mrow .mid{flex:1;min-width:0}
-.mrow .opp{font-size:13.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mrow .opp.w{color:var(--win)}
-.mrow .opp.l{color:var(--loss)}
-.mrow .opp.d{color:var(--draw)}
-.mrow .sub{font-size:10px;color:var(--txt-3);font-weight:700;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .opp{font-size:13.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}
+.mrow .sub{font-size:10px;color:var(--txt-soft);font-weight:700;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mnote{
+  padding:9px 14px 11px 20px;border-top:1px solid var(--card-brd);text-align:left;
+  font-size:11.5px;line-height:1.45;color:var(--txt-soft);
+}
+.mnote b{
+  font-weight:800;color:var(--txt-3);text-transform:uppercase;letter-spacing:.1em;
+  font-size:9.5px;margin-right:7px;
+}
 .score{display:flex;gap:7px;align-items:center;font-weight:800;font-size:14px;flex:none}
 .score .st{position:relative;color:var(--win)}
-.score .st.lost{color:var(--loss)}
-.score .st.tie{color:var(--draw)}
+.score .st.l{color:var(--loss)}
+.score .st.d{color:var(--draw)}
 .score .tb{position:absolute;top:-6px;right:-8px;font-size:9px;color:var(--txt-3);font-weight:700}
 
-/* forma recente a colonne */
-.fgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:16px}
-.fcol{display:flex;flex-direction:column;gap:5px;min-width:0}
-.fini,.fres{
+/* forma recente */
+.fgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:4px}
+.fres{
   width:100%;aspect-ratio:1;border-radius:7px;display:grid;place-items:center;
   font-family:var(--f-display);font-weight:400;font-size:14px;line-height:1;
 }
-.fini{background:var(--field);border:1px solid var(--field-brd);color:var(--txt-2)}
-.fini:active,.fres:active{transform:scale(.9)}
+.fres:active{transform:scale(.9)}
+.reveal{
+  border-radius:14px;padding:12px 14px;margin-bottom:13px;border:1px solid transparent;
+  font-size:13px;font-weight:800;letter-spacing:.03em;line-height:1.45;
+}
+.reveal .rtit{font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.05em;display:block;margin-bottom:2px}
+.reveal.w{background:rgba(46,209,122,.12);color:var(--win);border-color:rgba(46,209,122,.32)}
+.reveal.l{background:rgba(255,92,116,.1);color:var(--loss);border-color:rgba(255,92,116,.3)}
+.reveal.d{background:rgba(245,201,58,.12);color:var(--draw);border-color:rgba(245,201,58,.34)}
 
 /* grafici */
 .rings{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;align-items:start}
@@ -336,17 +361,8 @@ nav.tabs{
 .ringsub{font-size:10.5px;font-weight:700;color:var(--txt-2);margin-top:2px;font-variant-numeric:tabular-nums}
 .ringarc{filter:var(--ring-glow)}
 
-.donut{position:relative;width:150px;height:150px;margin:0 auto}
-.donut .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
-.donut .mid b{
-  display:block;font-family:var(--f-display);font-weight:400;font-size:42px;letter-spacing:.02em;
-  color:var(--num);text-shadow:var(--glow-num);
-}
-.donut .mid span{font-size:9px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.12em}
-.legend{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--card-brd)}
-.lg{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--txt-2)}
-.lg i{width:8px;height:8px;border-radius:2px;flex:none}
-.lg b{margin-left:auto;font-weight:800;color:var(--txt);font-variant-numeric:tabular-nums}
+.glegend{display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--txt-3)}
+.glegend i{width:14px;height:3px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:3px}
 
 .bars{display:flex;flex-direction:column;gap:14px;text-align:left}
 .bline .t{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:800;margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em;gap:8px}
@@ -368,24 +384,44 @@ nav.tabs{
 /* form */
 label.fl{display:block;font-size:10px;font-weight:800;color:var(--txt-3);text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px 3px;text-align:left}
 .field{
-  width:100%;min-width:0;padding:13px 14px;border-radius:15px;background:var(--field);
+  width:100%;max-width:100%;min-width:0;padding:13px 14px;border-radius:15px;background:var(--field);
   border:1px solid var(--field-brd);color:var(--txt);outline:none;transition:.18s;
+  appearance:none;-webkit-appearance:none;
 }
-input.field[type="date"]{padding-left:10px;padding-right:6px}
+input.field[type="date"]{padding:12px 12px;font-variant-numeric:tabular-nums}
+select.field{
+  padding-right:34px;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+}
 .field:focus{border-color:var(--optic);box-shadow:0 0 0 3px rgba(217,245,43,.14)}
 textarea.field{min-height:96px;resize:none;line-height:1.45}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid2>div{min-width:0}
 .fgroup{margin-bottom:16px}
 
+/* selettore esito nel form */
+.respick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.rpick{
+  padding:13px 6px;border-radius:14px;font-family:var(--f-display);font-weight:400;font-size:19px;
+  letter-spacing:.05em;border:1px solid var(--field-brd);background:var(--field);color:var(--txt-3);
+  transition:.18s;
+}
+.rpick:active{transform:scale(.96)}
+.rpick.on.w{background:rgba(46,209,122,.16);color:var(--win);border-color:rgba(46,209,122,.55)}
+.rpick.on.d{background:rgba(245,201,58,.16);color:var(--draw);border-color:rgba(245,201,58,.55)}
+.rpick.on.l{background:rgba(255,92,116,.14);color:var(--loss);border-color:rgba(255,92,116,.5)}
+
 .surfpick{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .spick{
-  border-radius:16px;padding:13px 4px 11px;text-align:center;border:1px solid var(--field-brd);
-  background:var(--field);transition:.2s;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  border-radius:14px;padding:13px 8px;border:1px solid var(--field-brd);
+  background:var(--field);transition:.2s;
 }
-.spick .ic{width:24px;height:24px;border-radius:8px;margin:0 auto 8px}
-.spick .nm{font-size:10px;font-weight:800;color:var(--txt-2);letter-spacing:.09em;text-transform:uppercase}
-.spick.on{border-color:transparent;transform:translateY(-2px)}
+.spick .ic{width:18px;height:18px;border-radius:6px;flex:none}
+.spick .nm{font-size:11px;font-weight:800;color:var(--txt-2);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.spick.on{border-color:transparent}
 .spick.on .nm{color:#fff}
 .spick.on.c{background:linear-gradient(150deg,var(--clay),var(--clay-2))}
 .spick.on.h{background:linear-gradient(150deg,var(--hard),var(--hard-2))}
@@ -403,6 +439,7 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 .tbf{display:flex;align-items:center;gap:8px;margin:-2px 0 12px 46px}
 .tbf input{width:96px;padding:8px 10px;font-size:13px}
 .tbf span{font-size:10px;color:var(--txt-3);font-weight:800;letter-spacing:.08em}
+.fhint{font-size:10px;color:var(--txt-3);font-weight:700;margin:-6px 0 14px 3px;text-align:left;line-height:1.5}
 
 .btn{
   width:100%;padding:16px;border-radius:18px;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
@@ -541,14 +578,14 @@ const SURF={
 };
 const SKEYS=Object.keys(SURF);
 const MESI=['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
-const ORARI=['19:00','19:30'];
+const ORARI=(()=>{const a=[];for(let h=0;h<24;h++){a.push(String(h).padStart(2,'0')+':00');a.push(String(h).padStart(2,'0')+':30');}return a;})();
 const DURATE=[60,90,120,150,180,210,240];
 const NAZ=[['IT','Italia'],['AL','Albania'],['AR','Argentina'],['AT','Austria'],['BE','Belgio'],['BR','Brasile'],
   ['HR','Croazia'],['FR','Francia'],['DE','Germania'],['GR','Grecia'],['MA','Marocco'],['NL','Paesi Bassi'],
   ['PL','Polonia'],['PT','Portogallo'],['GB','Regno Unito'],['RO','Romania'],['RU','Russia'],['RS','Serbia'],
   ['ES','Spagna'],['US','Stati Uniti'],['SE','Svezia'],['CH','Svizzera'],['TN','Tunisia'],['UA','Ucraina']];
 
-const blankProfile=()=>({name:'',hand:'Destro',level:'',avatar:'',age:'',nat:'IT',city:'',height:''});
+const blankProfile=()=>({name:'',surname:'',hand:'Destro',level:'',avatar:'',age:'',nat:'IT',city:'',height:''});
 const blank=()=>({profile:blankProfile(),matches:[],theme:''});
 let S=load();
 let view={n:'home'};
@@ -563,6 +600,12 @@ function load(){
     if(r&&r.matches){
       const o=Object.assign(blank(),r);
       o.profile=Object.assign(blankProfile(),r.profile||{});
+      // vecchio campo unico "name" → nome + cognome
+      if(!o.profile.surname&&o.profile.name&&o.profile.name.trim().includes(' ')){
+        const p=o.profile.name.trim().split(/\s+/);
+        o.profile.name=p.shift();
+        o.profile.surname=p.join(' ');
+      }
       return o;
     }
   }catch(e){}
@@ -648,16 +691,48 @@ function setsWon(m){
   (m.sets||[]).forEach(s=>{ if(s.me>s.opp)a++; else if(s.opp>s.me)b++; });
   return [a,b];
 }
-/* 'W' vittoria · 'L' sconfitta · 'D' pareggio · null se non c'è punteggio */
+/* l'esito scelto a mano vince; per le partite vecchie si calcola dai set */
 function outcome(m){
-  if(!m.sets||!m.sets.length)return null;
+  if(m&&(m.result==='W'||m.result==='D'||m.result==='L'))return m.result;
+  if(!m||!m.sets||!m.sets.length)return null;
   const [a,b]=setsWon(m);
   if(a===b)return 'D';
   return a>b?'W':'L';
 }
 function resClass(o){return o==='W'?'w':o==='L'?'l':o==='D'?'d':'';}
 function resLetter(o){return o==='W'?'V':o==='L'?'X':o==='D'?'P':'–';}
-function scoreStr(m){return (m.sets||[]).map(s=>s.me+'-'+s.opp).join(' ')||'–';}
+function resName(o){return o==='W'?'Vittoria':o==='L'?'Sconfitta':o==='D'?'Pareggio':'—';}
+function flipScore(t){
+  if(!t)return t;
+  const p=String(t).split('-');
+  return p.length===2?p[1].trim()+'-'+p[0].trim():t;
+}
+/* i set si mostrano sempre col vincitore per primo:
+   partita persa → girati; partita vinta o pareggiata → come sono stati inseriti */
+function dispSets(m){
+  const flip=outcome(m)==='L';
+  return (m.sets||[]).map(s=>{
+    const mine=+s.me||0, theirs=+s.opp||0;
+    return {
+      a: flip?theirs:mine,
+      b: flip?mine:theirs,
+      tb: flip?flipScore(s.tb):s.tb,
+      cls: mine>theirs?'w':theirs>mine?'l':'d'   // colore dal mio punto di vista
+    };
+  });
+}
+function scoreStr(m){return dispSets(m).map(s=>s.a+'-'+s.b).join(' ')||'–';}
+/* toglie le iniziali puntate: "Marusich M." → "Marusich", "M. Rossi" → "Rossi" */
+function surnameOf(full){
+  const t=String(full||'').trim();
+  if(!t)return '';
+  const parts=t.split(/\s+/).filter(p=>!/^[A-Za-zÀ-ÿ]\.?$/.test(p));
+  return parts.length?parts.join(' '):t;
+}
+function myName(){
+  const p=S.profile;
+  return [p.name,p.surname].filter(Boolean).join(' ').trim();
+}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function sorted(){return S.matches.slice().sort((x,y)=>(y.date+ (y.time||'')).localeCompare(x.date+(x.time||'')));}
 
@@ -667,6 +742,8 @@ function record(list){
   const tot=w+l+d;
   return {w,l,d,tot,pct:tot?Math.round(w/tot*100):0};
 }
+/* record scritto in ordine vittorie-pareggi-sconfitte */
+function recStr(r){return r.d?`${r.w}-${r.d}-${r.l}`:`${r.w}-${r.l}`;}
 function gamesRec(list){
   let g=0,o=0;list.forEach(m=>(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0}));return{g,o};
 }
@@ -729,7 +806,6 @@ function ring(pct,label,sub){
           <animate attributeName="stroke-dashoffset" from="${c.toFixed(1)}" to="${off.toFixed(1)}" dur=".85s" fill="freeze"
             calcMode="spline" keySplines=".2 .9 .3 1" keyTimes="0;1"/>
         </circle>
-        <circle cx="52" cy="10" r="4.4" fill="var(--win)" transform="rotate(${ang.toFixed(1)} 52 52)"/>
       </svg>
       <div class="mid"><b>${pct}%</b></div>
     </div>
@@ -737,24 +813,35 @@ function ring(pct,label,sub){
     <div class="ringsub">${sub}</div>
   </div>`;
 }
-function donut(pct,sub,lbl){
-  const id='dg'+(++gid);
-  const r=60,c=2*Math.PI*r,off=c*(1-pct/100);
-  const ang=-90+(pct/100)*360;
-  return `<div class="donut">
-    <svg viewBox="0 0 150 150" width="150" height="150">
-      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="var(--num)"/><stop offset="1" stop-color="var(--win)"/>
-      </linearGradient></defs>
-      <circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--track)" stroke-width="13"/>
-      <circle class="ringarc" cx="75" cy="75" r="${r}" fill="none" stroke="url(#${id})" stroke-width="13" stroke-linecap="round"
-        stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 75 75)">
-        <animate attributeName="stroke-dashoffset" from="${c.toFixed(1)}" to="${off.toFixed(1)}" dur=".85s" fill="freeze"
-          calcMode="spline" keySplines=".2 .9 .3 1" keyTimes="0;1"/>
-      </circle>
-      <circle cx="75" cy="15" r="6" fill="var(--win)" transform="rotate(${ang.toFixed(1)} 75 75)"/>
-    </svg>
-    <div class="mid"><b>${sub}</b><span>${lbl}</span></div>
+/* linea game fatti (verde) contro game subiti (rosso) */
+function gamesChart(list){
+  const seq=list.slice().reverse();
+  if(seq.length<2)return '<div style="color:var(--txt-3);font-size:12px">Servono almeno due partite.</div>';
+  const mine=[],theirs=[];
+  seq.forEach(m=>{
+    let g=0,o=0;(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0});
+    mine.push(g);theirs.push(o);
+  });
+  const max=Math.max(1,...mine,...theirs);
+  const W=280,H=118,P=8;
+  const X=i=>P+i/(seq.length-1)*(W-P*2);
+  const Y=v=>H-P-(v/max)*(H-P*2);
+  const path=a=>a.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  const dots=(a,col)=>a.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.4" fill="${col}"/>`).join('');
+  let grid='';
+  for(let k=1;k<=3;k++){
+    const y=P+(H-P*2)*k/4;
+    grid+=`<line x1="0" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}" stroke="var(--card-brd)" stroke-width="1" stroke-dasharray="3 5"/>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;overflow:visible">
+    ${grid}
+    <path d="${path(theirs)}" fill="none" stroke="var(--loss)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${path(mine)}" fill="none" stroke="var(--win)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots(theirs,'var(--loss)')}${dots(mine,'var(--win)')}
+  </svg>
+  <div class="glegend">
+    <span><i style="background:var(--win)"></i>Game fatti</span>
+    <span><i style="background:var(--loss)"></i>Game subiti</span>
   </div>`;
 }
 /* calendario dell'anno: un quadratino per giorno */
@@ -797,12 +884,6 @@ function ball(){
     <circle cx="32" cy="32" r="30" fill="url(#gb)"/>
     <path d="M8 10c8 12 8 32 0 44M56 10c-8 12-8 32 0 44" stroke="rgba(10,30,18,.55)" stroke-width="3.2" stroke-linecap="round"/>
   </svg>`;
-}
-function bar(label,sub,pct,color){
-  return `<div class="bline">
-    <div class="t"><div>${label}</div><span>${sub}</span></div>
-    <div class="track"><div class="fill" style="width:${pct}%;background:${color}"></div></div>
-  </div>`;
 }
 
 /* =========================================================
@@ -875,10 +956,8 @@ function flash(msg){
    ========================================================= */
 function vHome(){
   const all=sorted(), r=record(all);
-  const last=all.slice(0,10);
   const p=S.profile;
-  const name=p.name||'Il tuo profilo';
-  const ini=(p.name||'?').trim().charAt(0).toUpperCase()||'?';
+  const ini=((p.surname||p.name||'?').trim().charAt(0)||'?').toUpperCase();
   const av=p.avatar?`<img class="avatar" src="${p.avatar}" alt="">`:`<div class="avatar">${esc(ini)}</div>`;
   const flag=flagEmoji(p.nat);
 
@@ -891,12 +970,17 @@ function vHome(){
   if(p.level)meta+=(meta?' · ':'')+`<span class="lvl">${esc(p.level)}</span>`;
 
   let h=`<section class="card hero">
-    ${av}
-    <h3 class="name">${flag?`<span class="flag">${flag}</span>`:''}${esc(name)}</h3>
+    <div class="herotop">
+      ${av}
+      <div class="heroname">
+        <div class="n1">${esc(p.name||'Il tuo')}</div>
+        <div class="n2">${esc(p.surname||'profilo')}${flag?`<span class="flag">${flag}</span>`:''}</div>
+      </div>
+    </div>
     ${meta?`<div class="meta">${meta}</div>`:''}
     <div class="kpis">
       <div class="kpi"><b>${r.tot}</b><span>Match</span></div>
-      <div class="kpi"><b>${r.w}-${r.l}${r.d?'-'+r.d:''}</b><span>Record</span></div>
+      <div class="kpi"><b>${recStr(r)}</b><span>Record</span></div>
       <div class="kpi"><b>${r.pct}%</b><span>Vittorie</span></div>
     </div>
   </section>`;
@@ -912,33 +996,32 @@ function vHome(){
     </div>`;
   }
 
-  /* forma recente — colonne iniziale + esito */
-  const lr=record(last);
+  /* forma recente — ultime 20 */
+  const last=all.slice(0,20), lr=record(last);
   h+=`<section class="card">
-    <div class="clabel">Forma recente <em>· ultime ${last.length}</em></div>
-    <div style="font-family:var(--f-display);font-size:34px;letter-spacing:.02em;color:var(--num);text-shadow:var(--glow-num)">${lr.w}-${lr.l}${lr.d?'-'+lr.d:''}</div>
-    <div style="font-size:11px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-top:2px">${lr.pct}% di vittorie</div>
+    <div class="reveal hidden" id="reveal"></div>
+    <div class="clabel">Forma recente · <b>${recStr(lr)}</b> · <b>${lr.pct}%</b> di vittorie</div>
     <div class="fgrid">
       ${last.slice().reverse().map(m=>{
         const o=outcome(m);
-        const nm=(m.opponent||'Avversario').trim();
-        const ic=nm.charAt(0).toUpperCase()||'?';
-        return `<div class="fcol">
-          <button class="fini" data-act="oppname" data-n="${esc(nm)}">${esc(ic)}</button>
-          <button class="fres ${resClass(o)}" data-act="mres" data-id="${m.id}">${resLetter(o)}</button>
-        </div>`;
+        return `<button class="fres ${resClass(o)}" data-act="mres" data-id="${m.id}">${resLetter(o)}</button>`;
       }).join('')}
     </div>
-    <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-top:12px;line-height:1.5">Tocca l'iniziale per il nome, l'esito per il risultato</div>
+    <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-top:12px;line-height:1.5">Tocca un esito per vedere avversario e risultato</div>
   </section>`;
 
-  /* superfici: barra unica sfumata */
+  /* superfici */
   h+=surfaceBlend(all);
+
+  /* ultime 5 partite */
+  h+=`<div class="sec"><h2>Ultime partite</h2>
+    <button class="hint" data-act="go" data-v="hist" style="color:var(--num)">Vedi tutte →</button></div>`;
+  h+=all.slice(0,5).map(mrow).join('');
   return h;
 }
 
 /* barra unica: più giochi su una superficie, più il colore tende a quella */
-function surfaceBlend(all){
+function surfaceBlend(all,label){
   const rc=record(all.filter(m=>m.surface==='clay'));
   const rh=record(all.filter(m=>m.surface==='hard'));
   const tot=rc.tot+rh.tot;
@@ -946,7 +1029,7 @@ function surfaceBlend(all){
   const p=Math.round(rc.tot/tot*100);
   const a=Math.max(0,p-16), b=Math.min(100,p+16);
   return `<section class="card">
-    <div class="clabel">Superfici <em>· all-time</em></div>
+    <div class="clabel">${label||'Superfici <em>· all-time</em>'}</div>
     <div class="blend">
       <div class="r2" style="margin-bottom:9px">
         <div style="color:var(--clay-2)">Terra<small>${rc.tot} partite · ${rc.pct}%</small></div>
@@ -956,8 +1039,8 @@ function surfaceBlend(all){
         <div class="fill" style="width:100%;background:linear-gradient(90deg,var(--clay) 0%,var(--clay-2) ${a}%,var(--hard-2) ${b}%,var(--hard) 100%)"></div>
       </div>
       <div class="r2" style="margin-top:9px">
-        <div><small>${rc.w}V · ${rc.l}S${rc.d?' · '+rc.d+'P':''}</small></div>
-        <div class="b"><small>${rh.w}V · ${rh.l}S${rh.d?' · '+rh.d+'P':''}</small></div>
+        <div><small>${rc.w}V · ${rc.d}P · ${rc.l}S</small></div>
+        <div class="b"><small>${rh.w}V · ${rh.d}P · ${rh.l}S</small></div>
       </div>
     </div>
   </section>`;
@@ -965,18 +1048,19 @@ function surfaceBlend(all){
 
 function mrow(m){
   const o=outcome(m),s=SURF[m.surface]||SURF.hard;
-  const sc=(m.sets||[]).map(x=>{
-    const cls=x.opp>x.me?' lost':x.opp===x.me?' tie':'';
-    return `<div class="st${cls}">${x.me}-${x.opp}${x.tb?`<span class="tb">${esc(x.tb.split('-')[0]||'')}</span>`:''}</div>`;
-  }).join('');
-  return `<div class="mrow" data-act="detail" data-id="${m.id}">
+  const sc=dispSets(m).map(x=>
+    `<div class="st ${x.cls}">${x.a}-${x.b}${x.tb?`<span class="tb">${esc(String(x.tb).split('-')[0]||'')}</span>`:''}</div>`).join('');
+  return `<div class="mcard" data-act="detail" data-id="${m.id}">
     <div class="bar b-${s.cls}"></div>
-    <div class="res ${resClass(o)}">${resLetter(o)}</div>
-    <div class="mid">
-      <div class="opp ${resClass(o)}">${esc(m.opponent||'Avversario')}</div>
-      <div class="sub">${relDay(m.date)} · ${s.n}${m.court?' · '+esc(m.court):''}${m.notes?' · 📝':''}</div>
+    <div class="mrow">
+      <div class="res ${resClass(o)}">${resLetter(o)}</div>
+      <div class="mid">
+        <div class="opp">${esc(m.opponent||'Avversario')}</div>
+        <div class="sub">${relDay(m.date)} · ${s.n}${m.court?' · '+esc(m.court):''}</div>
+      </div>
+      <div class="score num">${sc}</div>
     </div>
-    <div class="score num">${sc}</div>
+    <div class="mnote"><b>Note :</b>${m.notes?esc(m.notes):''}</div>
   </div>`;
 }
 
@@ -995,36 +1079,20 @@ function vStats(){
   let h=`<section class="card">
     <div class="clabel"><b>${r.tot}</b> partite giocate</div>
     <div class="rings">
-      ${ring(r.pct,'Vittorie',`${r.w}V · ${r.l}S${r.d?' · '+r.d+'P':''}`)}
+      ${ring(r.pct,'Vittorie',`${r.w}V · ${r.d}P · ${r.l}S`)}
       ${ring(setPct,'Set',`${st.a}-${st.b}`)}
       ${ring(gamePct,'Game',`${g.g}-${g.o}`)}
     </div>
   </section>`;
 
-  /* per superficie */
-  const sBars=SKEYS.map(k=>{
-    const rr=record(list.filter(m=>m.surface===k));
-    if(!rr.tot)return '';
-    const col=`var(${SURF[k].c})`;
-    return bar(
-      `<span class="sdot" style="background:${col}"></span><span style="color:${col}">${SURF[k].n} · ${rr.tot}</span>`,
-      `${rr.w}V · ${rr.l}S${rr.d?' · '+rr.d+'P':''} · ${rr.pct}%`,
-      rr.pct,col);
-  }).join('');
-  h+=`<section class="card">
-    <div class="clabel">Rendimento per superficie</div>
-    <div class="bars">${sBars||'<div style="color:var(--txt-3);font-size:13px">Nessuna superficie registrata.</div>'}</div>
-  </section>`;
+  /* superfici — stesso schema della home */
+  h+=surfaceBlend(list,'Rendimento per superficie');
 
-  /* andamento — ultime 10, esiti cliccabili */
-  const lastN=list.slice(0,10);
+  /* andamento — game fatti contro game subiti, ultime 20 */
+  const lastN=list.slice(0,20);
   h+=`<section class="card">
     <div class="clabel">Andamento <em>· ultime ${lastN.length}</em></div>
-    <div class="formrow" style="margin-top:0">
-      ${lastN.slice().reverse().map(m=>{const o=outcome(m);
-        return `<button class="fdot ${resClass(o)}" data-act="mres" data-id="${m.id}">${resLetter(o)}</button>`;}).join('')}
-    </div>
-    <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-top:12px;line-height:1.5">Tocca un esito per vedere avversario e risultato</div>
+    ${gamesChart(lastN)}
   </section>`;
 
   h+=recordsCard();
@@ -1039,7 +1107,7 @@ function vStats(){
     tops.forEach(([o,ms])=>{const rr=record(ms);
       h+=`<div class="statline tap" data-act="opp" data-n="${esc(o)}">
         <div class="k" style="color:var(--txt);font-weight:800">${esc(o)}<small>${ms.length} partite</small></div>
-        <div class="v" style="color:${rr.w>rr.l?'var(--win)':rr.l>rr.w?'var(--loss)':'var(--draw)'}">${rr.w}-${rr.l}${rr.d?'-'+rr.d:''}</div>
+        <div class="v" style="color:${rr.w>rr.l?'var(--win)':rr.l>rr.w?'var(--loss)':'var(--draw)'}">${recStr(rr)}</div>
         <div class="go">›</div></div>`;});
     h+=`</section>`;
   }
@@ -1139,7 +1207,7 @@ function vOpp(name){
   let h=`<section class="card">
     <div class="clabel"><b>${r.tot}</b> incontri</div>
     <div class="rings">
-      ${ring(r.pct,'Vittorie',`${r.w}V · ${r.l}S${r.d?' · '+r.d+'P':''}`)}
+      ${ring(r.pct,'Vittorie',`${r.w}V · ${r.d}P · ${r.l}S`)}
       ${ring(setPct,'Set',`${st.a}-${st.b}`)}
       ${ring(gamePct,'Game',`${g.g}-${g.o}`)}
     </div>
@@ -1154,18 +1222,7 @@ function vOpp(name){
     </div>
   </section>`;
 
-  const sBars=SKEYS.map(k=>{
-    const rr=record(ms.filter(m=>m.surface===k));
-    if(!rr.tot)return '';
-    const col=`var(${SURF[k].c})`;
-    return bar(
-      `<span class="sdot" style="background:${col}"></span><span style="color:${col}">${SURF[k].n} · ${rr.tot}</span>`,
-      `${rr.w}V · ${rr.l}S${rr.d?' · '+rr.d+'P':''} · ${rr.pct}%`,rr.pct,col);
-  }).join('');
-  if(sBars)h+=`<section class="card">
-    <div class="clabel">Dove vi siete affrontati</div>
-    <div class="bars">${sBars}</div>
-  </section>`;
+  h+=surfaceBlend(ms,'Dove vi siete affrontati');
 
   h+=`<div class="sec"><h2>Tutti gli incontri</h2><span class="hint">${ms.length} partite</span></div>`;
   h+=ms.map(mrow).join('');
@@ -1176,7 +1233,14 @@ function vOpp(name){
    VISTA — STORICO
    ========================================================= */
 function vHist(){
-  let h=`<div class="fgroup"><input class="field" id="q" placeholder="Cerca avversario…" value="${esc(filt.q)}" data-act="q"></div>
+  const opps=uniqueField('opponent').slice().sort((a,b)=>a.localeCompare(b));
+  let h=`<div class="searchrow">
+    <input class="field" id="q" placeholder="Cerca avversario…" value="${esc(filt.q)}" data-act="q">
+    <select class="field h2hsel" id="h2h" aria-label="Testa a testa">
+      <option value="">H2H</option>
+      ${opps.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}
+    </select>
+  </div>
   <div class="frow">
     <div class="flab">Superficie</div>
     <div class="fchips">
@@ -1216,7 +1280,11 @@ function vDetail(id){
   const m=S.matches.find(x=>x.id===id);
   if(!m)return `<div class="empty"><h3>Match non trovato</h3></div>`;
   const s=SURF[m.surface]||SURF.hard,o=outcome(m),[a,b]=setsWon(m);
-  const me=S.profile.name||'Io';
+  // il vincitore va sempre a sinistra
+  const flip=o==='L';
+  const leftSets=flip?b:a, rightSets=flip?a:b;
+  const meLabel=S.profile.surname||surnameOf(myName())||'Io';
+  const oppLabel=surnameOf(m.opponent)||'Avversario';
 
   let h=`<section class="mhead s-${s.cls}">
     <div class="rel">
@@ -1225,14 +1293,14 @@ function vDetail(id){
         <span class="sbadge" style="background:rgba(0,0,0,.24)"><i></i>${s.n}</span>
       </div>
       <div class="vs">
-        <div class="pl">${esc(me)}</div>
-        <div class="big num">${a} : ${b}</div>
-        <div class="pl r">${esc(m.opponent||'Avversario')}</div>
+        <div class="pl">${esc(flip?oppLabel:meLabel)}</div>
+        <div class="big num">${leftSets} : ${rightSets}</div>
+        <div class="pl r">${esc(flip?meLabel:oppLabel)}</div>
       </div>
       <div class="setgrid">
-        ${(m.sets||[]).map((x,i)=>`<div class="setbox">
+        ${dispSets(m).map((x,i)=>`<div class="setbox">
           <div class="n">SET ${i+1}</div>
-          <div class="v">${x.me}-${x.opp}${x.tb?`<sup>${esc(x.tb)}</sup>`:''}</div></div>`).join('')}
+          <div class="v">${x.a}-${x.b}${x.tb?`<sup>${esc(x.tb)}</sup>`:''}</div></div>`).join('')}
       </div>
     </div>
   </section>`;
@@ -1263,23 +1331,32 @@ function vDetail(id){
 function newDraft(pre){
   const d=new Date();
   return Object.assign({
-    id:null,date:d.toISOString().slice(0,10),time:'19:00',duration:60,
-    opponent:'',surface:'hard',court:'',sets:[{me:'',opp:'',tb:''},{me:'',opp:'',tb:''}],
+    id:null,date:d.toISOString().slice(0,10),time:'19:00',duration:60,result:null,
+    opponent:'',surface:'hard',court:'',sets:[{me:'',opp:'',tb:''}],
     notes:''
   },pre||{});
 }
+/* carica una partita nel form: i set si mostrano col vincitore per primo */
+function draftFrom(m){
+  const o=outcome(m);
+  const d=newDraft(JSON.parse(JSON.stringify(m)));
+  d.result=o;
+  d.sets=dispSets(m).map(s=>({me:String(s.a),opp:String(s.b),tb:s.tb||''}));
+  return d;
+}
 function vForm(){
   const d=draft;
-  const clean=d.sets.filter(s=>s.me!==''&&s.opp!=='');
-  const o=clean.length?outcome({sets:clean.map(s=>({me:+s.me,opp:+s.opp}))}):null;
-  const [a,b]=setsWon({sets:clean.map(s=>({me:+s.me,opp:+s.opp}))});
-
   const opps=uniqueField('opponent'), courts=uniqueField('court');
 
-  let h=`<div class="resultbanner ${resClass(o)||'n'}">
-    ${o==='W'?`✓ Vittoria · ${a}-${b}`:o==='L'?`✕ Sconfitta · ${a}-${b}`:o==='D'?`= Pareggio · ${a}-${b}`:'Inserisci il punteggio'}</div>`;
+  let h=`<div class="fgroup">
+    <label class="fl">Esito della partita</label>
+    <div class="respick">
+      ${[['W','Vittoria'],['D','Pareggio'],['L','Sconfitta']].map(([k,lb])=>
+        `<button class="rpick ${resClass(k)} ${d.result===k?'on':''}" data-act="setres" data-k="${k}">${lb}</button>`).join('')}
+    </div>
+  </div>
 
-  h+=`<div class="fgroup">
+  <div class="fgroup">
     <label class="fl">Avversario</label>
     <input class="field" data-f="opponent" list="opplist" value="${esc(d.opponent)}" placeholder="Nome avversario" autocomplete="off">
     <datalist id="opplist">${opps.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>
@@ -1290,7 +1367,9 @@ function vForm(){
   </div>
   <div class="fgroup grid2">
     <div><label class="fl">Ora</label>
-      <div class="seg">${ORARI.map(t=>`<button data-act="time" data-k="${t}" class="${d.time===t?'on':''}">${t}</button>`).join('')}</div>
+      <select class="field" data-f="time">
+        ${ORARI.map(t=>`<option value="${t}" ${d.time===t?'selected':''}>${t}</option>`).join('')}
+      </select>
     </div>
     <div><label class="fl">Durata</label>
       <select class="field" data-f="duration">
@@ -1313,7 +1392,7 @@ function vForm(){
 
   h+=`<div class="fgroup"><label class="fl">Punteggio per set</label>`;
   d.sets.forEach((s,i)=>{
-    const tb=(+s.me===7&&+s.opp===6)||(+s.me===6&&+s.opp===7)||(+s.me===1&&+s.opp===0&&i===2)||(+s.me===0&&+s.opp===1&&i===2)||s.tb;
+    const tb=(+s.me===7&&+s.opp===6)||(+s.me===6&&+s.opp===7)||s.tb;
     h+=`<div class="setrow">
       <div class="lbl">Set ${i+1}</div>
       <div class="stepper">
@@ -1331,8 +1410,9 @@ function vForm(){
     </div>`;
     if(tb)h+=`<div class="tbf"><span>TIE-BREAK</span><input class="field num" data-sf="tb" data-i="${i}" value="${esc(s.tb)}" placeholder="7-5" inputmode="numeric"></div>`;
   });
-  if(d.sets.length<5)h+=`<button class="btn ghost sm" data-act="addset" style="margin-top:4px">+ Aggiungi set</button>`;
-  h+=`</div>`;
+  h+=`</div>
+  <div class="fhint">Scrivi sempre i game del vincitore per primi (es. 6-4), ci pensa l'app a metterli dalla parte giusta.</div>`;
+  if(d.sets.length<5)h+=`<button class="btn ghost sm" data-act="addset" style="margin-bottom:16px">+ Aggiungi set</button>`;
 
   h+=`<div class="fgroup"><label class="fl">Note tattiche</label>
   <textarea class="field" data-f="notes" placeholder="Ottimo rovescio lungolinea, sofferto la risposta sulla seconda…">${esc(d.notes)}</textarea></div>
@@ -1348,8 +1428,8 @@ function vForm(){
    ========================================================= */
 function vProf(){
   const p=S.profile;
-  const ini=(p.name||'?').trim().charAt(0).toUpperCase()||'?';
-  const av=p.avatar?`<img class="avatar" src="${p.avatar}" alt="" style="width:96px;height:96px">`:`<div class="avatar" style="width:96px;height:96px;font-size:38px">${esc(ini)}</div>`;
+  const ini=((p.surname||p.name||'?').trim().charAt(0)||'?').toUpperCase();
+  const av=p.avatar?`<img class="avatar" src="${p.avatar}" alt="" style="width:96px;height:96px;margin:0 auto">`:`<div class="avatar" style="width:96px;height:96px;font-size:38px;margin:0 auto">${esc(ini)}</div>`;
   return `<section class="card">
     ${av}
     <div style="height:14px"></div>
@@ -1375,8 +1455,12 @@ function vProf(){
   </section>
   <section class="card">
     <div class="clabel">Dati giocatore</div>
-    <div class="fgroup"><label class="fl">Nome</label>
-      <input class="field" data-p="name" value="${esc(p.name)}" placeholder="Il tuo nome"></div>
+    <div class="fgroup grid2">
+      <div><label class="fl">Nome</label>
+        <input class="field" data-p="name" value="${esc(p.name)}" placeholder="Andrea"></div>
+      <div><label class="fl">Cognome</label>
+        <input class="field" data-p="surname" value="${esc(p.surname)}" placeholder="Dellerba"></div>
+    </div>
     <div class="fgroup grid2">
       <div><label class="fl">Mano</label>
         <select class="field" data-p="hand"><option ${p.hand==='Destro'?'selected':''}>Destro</option><option ${p.hand==='Mancino'?'selected':''}>Mancino</option></select></div>
@@ -1475,7 +1559,6 @@ function saveCrop(){
     if(!crop.img)return;
     const old=crop.scale;
     crop.scale=+zoom.value/100;
-    // mantiene il centro dell'inquadratura mentre si zooma
     const k=crop.scale/old, V=crop.V;
     crop.x=V/2-(V/2-crop.x)*k;
     crop.y=V/2-(V/2-crop.y)*k;
@@ -1496,19 +1579,26 @@ document.addEventListener('click',e=>{
     case 'new': draft=newDraft();go('form');break;
     case 'detail': go('detail',t.dataset.id);break;
     case 'opp': go('opp',t.dataset.n);break;
-    case 'oppname': flash(t.dataset.n);break;
     case 'mres':{
       const m=S.matches.find(x=>x.id===t.dataset.id);
-      if(m)flash((m.opponent||'Avversario')+' · '+scoreStr(m));
-      break;
+      if(!m)break;
+      const o=outcome(m);
+      const box=document.getElementById('reveal');
+      const txt=`<span class="rtit">${resLetter(o)==='V'?'✓':resLetter(o)==='X'?'✕':'='} ${resName(o)}</span>${esc(m.opponent||'Avversario')} · ${scoreStr(m)} · ${relDay(m.date)}`;
+      if(box){
+        box.className='reveal '+resClass(o);
+        box.innerHTML=txt;
+      }else{
+        flash(resName(o)+' · '+(m.opponent||'Avversario')+' · '+scoreStr(m));
+      }
+      haptic();break;
     }
     case 'hmy': hmYear=+t.dataset.k;render();break;
-    case 'time': draft.time=t.dataset.k;haptic();render();break;
+    case 'setres': draft.result=t.dataset.k;haptic();render();break;
     case 'edit':{
       const m=S.matches.find(x=>x.id===t.dataset.id);
-      draft=newDraft(JSON.parse(JSON.stringify(m)));
-      draft.sets=draft.sets.map(s=>({me:String(s.me),opp:String(s.opp),tb:s.tb||''}));
-      go('form');break;
+      if(m){draft=draftFrom(m);go('form');}
+      break;
     }
     case 'del':{
       if(confirm('Eliminare questa partita?')){
@@ -1560,7 +1650,6 @@ document.addEventListener('input',e=>{
     let v=el.value;
     if(f!=='tb'){v=v.replace(/\D/g,'').slice(0,2);el.value=v;}
     draft.sets[i][f]=v;
-    if(f!=='tb')updateBanner();
     return;
   }
   if(el.dataset.p){S.profile[el.dataset.p]=el.value;save();return;}
@@ -1568,19 +1657,13 @@ document.addEventListener('input',e=>{
 });
 document.addEventListener('change',e=>{
   const el=e.target;
+  if(el.id==='h2h'&&el.value){go('opp',el.value);return;}
   if(el.dataset.f&&draft)draft[el.dataset.f]=el.value;
   if(el.dataset.p){S.profile[el.dataset.p]=el.value;save();}
   // uscendo da un campo punteggio ridisegno: fa comparire/sparire il tie-break
   if(el.dataset.sf&&el.dataset.sf!=='tb'&&draft&&view.n==='form')render();
 });
 
-function updateBanner(){
-  const clean=draft.sets.filter(s=>s.me!==''&&s.opp!=='').map(s=>({me:+s.me,opp:+s.opp}));
-  const o=clean.length?outcome({sets:clean}):null,[a,b]=setsWon({sets:clean});
-  const el=document.querySelector('.resultbanner');if(!el)return;
-  el.className='resultbanner '+(resClass(o)||'n');
-  el.textContent=o==='W'?`✓ Vittoria · ${a}-${b}`:o==='L'?`✕ Sconfitta · ${a}-${b}`:o==='D'?`= Pareggio · ${a}-${b}`:'Inserisci il punteggio';
-}
 function renderHistList(){
   const el=document.getElementById('view');
   const pos=document.getElementById('q');const sel=pos?pos.selectionStart:null;
@@ -1592,18 +1675,22 @@ function renderHistList(){
 /* salvataggio partita */
 function saveMatch(){
   const d=draft;
-  const sets=d.sets.filter(s=>s.me!==''&&s.opp!=='').map(s=>({me:+s.me,opp:+s.opp,tb:(s.tb||'').trim()}));
-  if(!sets.length){flash('Inserisci almeno un set');return;}
+  if(!d.result){flash('Scegli prima l\'esito della partita');return;}
+  const raw=d.sets.filter(s=>s.me!==''&&s.opp!=='').map(s=>({me:+s.me,opp:+s.opp,tb:(s.tb||'').trim()}));
+  if(!raw.length){flash('Inserisci almeno un set');return;}
+  // in memoria i game restano sempre "prima i miei": se ho perso, giro
+  const sets=d.result==='L'
+    ? raw.map(s=>({me:s.opp,opp:s.me,tb:flipScore(s.tb)}))
+    : raw;
   if(!d.opponent.trim())d.opponent='Avversario';
   const m={
-    id:d.id||uid(),date:d.date,time:d.time,duration:+d.duration||60,
+    id:d.id||uid(),date:d.date,time:d.time,duration:+d.duration||60,result:d.result,
     opponent:d.opponent.trim(),surface:d.surface,court:(d.court||'').trim(),
     sets,notes:(d.notes||'').trim()
   };
   if(d.id){S.matches=S.matches.map(x=>x.id===d.id?m:x);}else{S.matches.push(m);}
   save();draft=null;
-  const o=outcome(m);
-  flash(o==='W'?'✓ Vittoria registrata':o==='D'?'= Pareggio registrato':'Partita registrata');
+  flash(m.result==='W'?'✓ Vittoria registrata':m.result==='D'?'= Pareggio registrato':'Sconfitta registrata');
   go('detail',m.id);
 }
 /* foto profilo → apre il ritaglio */
@@ -1620,16 +1707,18 @@ function loadDemo(){
   const names=['M. Rossi','L. Bianchi','A. Conti','D. Ferrari','S. Greco','P. Marino','G. Costa'];
   const surf=['hard','clay','clay','hard','clay','hard','clay'];
   const courts=['Laurera 15A40','Momy Sport Village','Laurera 15A40','Centrale'];
+  const notes=['Buona percentuale di prime, da migliorare la risposta sulla seconda.',
+               'Servizio in tilt nel secondo set, poi rientrato col dritto.','',''];
   const out=[];const today=new Date();
   for(let i=0;i<24;i++){
     const d=new Date(today);d.setDate(d.getDate()-i*9-Math.floor(Math.random()*4));
     const roll=Math.random();
-    const sets=[];
-    if(roll<.08){                              // pareggio
+    const sets=[];let result;
+    if(roll<.08){
       const v=6+Math.floor(Math.random()*3);
-      sets.push({me:v,opp:v,tb:''});
+      sets.push({me:v,opp:v,tb:''});result='D';
     }else{
-      const win=roll<.58;
+      const win=roll<.58;result=win?'W':'L';
       const n=Math.random()<.35?3:2;
       for(let k=0;k<n;k++){
         const meWin=(k<2)?(k===0?win:(n===3?!win:win)):win;
@@ -1639,13 +1728,14 @@ function loadDemo(){
         sets.push(tie?{me:meWin?7:6,opp:meWin?6:7,tb:meWin?'7-5':'5-7'}:{me:a,opp:b,tb:''});
       }
     }
-    out.push({id:uid(),date:d.toISOString().slice(0,10),time:ORARI[i%2],duration:DURATE[i%DURATE.length],
-      opponent:names[i%names.length],surface:surf[i%surf.length],court:courts[i%courts.length],sets,
-      notes:i%4===0?'Buona percentuale di prime, da migliorare la risposta sulla seconda.':''});
+    out.push({id:uid(),date:d.toISOString().slice(0,10),time:ORARI[38+(i%4)],duration:DURATE[i%DURATE.length],
+      result,opponent:names[i%names.length],surface:surf[i%surf.length],court:courts[i%courts.length],sets,
+      notes:notes[i%notes.length]});
   }
   S.matches=out;
   if(!S.profile.name){
-    S.profile=Object.assign(S.profile,{name:'Andrea',hand:'Mancino',age:'30',height:'167',city:'Rivalta di Torino',level:'4.NC',nat:'IT'});
+    S.profile=Object.assign(S.profile,{name:'Andrea',surname:'Dellerba',hand:'Mancino',
+      age:'30',height:'167',city:'Rivalta di Torino',level:'4.NC',nat:'IT'});
   }
   save();go('home');flash('Dati di esempio caricati');
 }
