@@ -345,6 +345,8 @@ nav.tabs{
 .score .st.l{color:var(--loss)}
 .score .st.d{color:var(--draw)}
 .score .tb{position:absolute;top:-6px;right:-8px;font-size:9px;color:var(--txt-3);font-weight:700}
+/* marcatore per un punteggio che è un tie-break vero e proprio */
+.score .tbm{font-style:normal;font-size:7.5px;font-weight:800;color:var(--num);vertical-align:6px;margin-left:2px;letter-spacing:.04em}
 
 /* forma recente */
 .fgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:4px}
@@ -443,6 +445,7 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 
 .setrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .setrow .lbl{font-size:10px;font-weight:800;color:var(--txt-3);width:38px;text-transform:uppercase;letter-spacing:.06em}
+.setrow .lbl.tbl{color:var(--num);text-shadow:var(--glow-num)}
 .stepper{display:flex;align-items:center;gap:2px;background:var(--field);border:1px solid var(--field-brd);border-radius:14px;padding:3px;flex:1;min-width:0}
 .stepper button{width:30px;height:34px;border-radius:11px;font-size:19px;font-weight:600;color:var(--txt-2);display:grid;place-items:center;flex:none}
 .stepper button:active{background:var(--card-brd)}
@@ -731,6 +734,7 @@ function dispSets(m){
       a: flip?theirs:mine,
       b: flip?mine:theirs,
       tb: flip?flipScore(s.tb):s.tb,
+      tbk: s.kind==='tb',                        // riga che è un tie-break, non un set
       cls: mine>theirs?'w':theirs>mine?'l':'d'   // colore dal mio punto di vista
     };
   });
@@ -758,8 +762,14 @@ function record(list){
 }
 /* record scritto in ordine vittorie-pareggi-sconfitte */
 function recStr(r){return r.d?`${r.w}-${r.d}-${r.l}`:`${r.w}-${r.l}`;}
+/* i punti di un tie-break non sono game, quindi non entrano nel conteggio */
 function gamesRec(list){
-  let g=0,o=0;list.forEach(m=>(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0}));return{g,o};
+  let g=0,o=0;
+  list.forEach(m=>(m.sets||[]).forEach(s=>{
+    if(s.kind==='tb')return;
+    g+=+s.me||0;o+=+s.opp||0;
+  }));
+  return{g,o};
 }
 function setsRec(list){
   let a=0,b=0;list.forEach(m=>{const[x,y]=setsWon(m);a+=x;b+=y;});return{a,b};
@@ -1076,7 +1086,10 @@ function surfaceBlend(all,label){
 function mrow(m){
   const o=outcome(m),s=SURF[m.surface]||SURF.hard;
   const sc=dispSets(m).map(x=>
-    `<div class="st ${x.cls}">${x.a}-${x.b}${x.tb?`<span class="tb">${esc(String(x.tb).split('-')[0]||'')}</span>`:''}</div>`).join('');
+    `<div class="st ${x.cls}">${x.a}-${x.b}${
+      x.tbk?'<i class="tbm">TB</i>'
+           :(x.tb?`<span class="tb">${esc(String(x.tb).split('-')[0]||'')}</span>`:'')
+    }</div>`).join('');
   // niente superficie nel testo: la dice già la barra colorata a sinistra
   const sub=[dateFull(m.date),timeRange(m),m.court?esc(m.court):''].filter(Boolean).join(' · ');
   return `<div class="mcard" data-act="detail" data-id="${m.id}">
@@ -1162,7 +1175,7 @@ function widest(type){
   let best=null,bd=-1;
   sorted().forEach(m=>{
     if(outcome(m)!==type)return;
-    let g=0,o=0;(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0});
+    let g=0,o=0;(m.sets||[]).forEach(s=>{if(s.kind==='tb')return;g+=+s.me||0;o+=+s.opp||0});
     const diff=type==='W'?g-o:o-g;
     if(diff>bd){bd=diff;best=m;}
   });
@@ -1329,9 +1342,11 @@ function vDetail(id){
         <div class="pl r">${esc(flip?meLabel:oppLabel)}</div>
       </div>
       <div class="setgrid">
-        ${dispSets(m).map((x,i)=>`<div class="setbox">
-          <div class="n">SET ${i+1}</div>
-          <div class="v">${x.a}-${x.b}${x.tb?`<sup>${esc(x.tb)}</sup>`:''}</div></div>`).join('')}
+        ${dispSets(m).map((x,i,arr)=>{
+          const n=arr.slice(0,i+1).filter(y=>!y.tbk).length;
+          return `<div class="setbox">
+          <div class="n">${x.tbk?'TIE-BREAK':'SET '+n}</div>
+          <div class="v">${x.a}-${x.b}${x.tb?`<sup>${esc(x.tb)}</sup>`:''}</div></div>`;}).join('')}
       </div>
     </div>
   </section>`;
@@ -1372,7 +1387,11 @@ function draftFrom(m){
   const o=outcome(m);
   const d=newDraft(JSON.parse(JSON.stringify(m)));
   d.result=o;
-  d.sets=dispSets(m).map(s=>({me:String(s.a),opp:String(s.b),tb:s.tb||''}));
+  d.sets=dispSets(m).map(s=>{
+    const o={me:String(s.a),opp:String(s.b),tb:s.tb||''};
+    if(s.tbk)o.kind='tb';
+    return o;
+  });
   return d;
 }
 function vForm(){
@@ -1421,11 +1440,15 @@ function vForm(){
     <datalist id="courtlist">${courts.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>
   </div>`;
 
-  h+=`<div class="fgroup"><label class="fl">Punteggio per set</label>`;
+  h+=`<div class="fgroup"><label class="fl">Punteggio</label>`;
+  let setNo=0;
   d.sets.forEach((s,i)=>{
-    const tb=(+s.me===7&&+s.opp===6)||(+s.me===6&&+s.opp===7)||s.tb;
+    const isTb=s.kind==='tb';
+    if(!isTb)setNo++;
+    // il campo tie-break interno non ha senso su una riga che è già un tie-break
+    const tb=!isTb&&((+s.me===7&&+s.opp===6)||(+s.me===6&&+s.opp===7)||s.tb);
     h+=`<div class="setrow">
-      <div class="lbl">Set ${i+1}</div>
+      <div class="lbl${isTb?' tbl':''}">${isTb?'TB':'Set '+setNo}</div>
       <div class="stepper">
         <button data-act="stp" data-i="${i}" data-s="me" data-d="-1">−</button>
         <input class="num" inputmode="numeric" maxlength="2" data-sf="me" data-i="${i}" value="${esc(s.me)}" placeholder="–">
@@ -1442,8 +1465,12 @@ function vForm(){
     if(tb)h+=`<div class="tbf"><span>TIE-BREAK</span><input class="field num" data-sf="tb" data-i="${i}" value="${esc(s.tb)}" placeholder="7-5" inputmode="numeric"></div>`;
   });
   h+=`</div>
-  <div class="fhint">Scrivi sempre i game del vincitore per primi (es. 6-4), ci pensa l'app a metterli dalla parte giusta.</div>`;
-  if(d.sets.length<5)h+=`<button class="btn ghost sm" data-act="addset" style="margin-bottom:16px">+ Aggiungi set</button>`;
+  <div class="fhint">Scrivi sempre i punti del vincitore per primi (es. 6-4), ci pensa l'app a metterli dalla parte giusta.
+  Il tie-break può finire ai 7 o ai 10, scrivi il punteggio che è uscito.</div>`;
+  if(d.sets.length<5)h+=`<div class="grid2" style="margin-bottom:16px">
+    <button class="btn ghost sm" data-act="addset">+ Set</button>
+    <button class="btn ghost sm" data-act="addtb">+ Tie break</button>
+  </div>`;
 
   h+=`<div class="fgroup"><label class="fl">Note tattiche</label>
   <textarea class="field" data-f="notes" placeholder="Ottimo rovescio lungolinea, sofferto la risposta sulla seconda…">${esc(d.notes)}</textarea></div>
@@ -1658,6 +1685,7 @@ document.addEventListener('click',e=>{
       draft.sets[i][s]=String(v);haptic();render();break;
     }
     case 'addset': draft.sets.push({me:'',opp:'',tb:''});render();break;
+    case 'addtb': draft.sets.push({me:'',opp:'',tb:'',kind:'tb'});render();break;
     case 'rmset': draft.sets.splice(+t.dataset.i,1);render();break;
     case 'savematch': saveMatch();break;
     case 'demo': loadDemo();break;
@@ -1711,11 +1739,15 @@ function renderHistList(){
 function saveMatch(){
   const d=draft;
   if(!d.result){flash('Scegli prima l\'esito della partita');return;}
-  const raw=d.sets.filter(s=>s.me!==''&&s.opp!=='').map(s=>({me:+s.me,opp:+s.opp,tb:(s.tb||'').trim()}));
+  const raw=d.sets.filter(s=>s.me!==''&&s.opp!=='').map(s=>{
+    const o={me:+s.me,opp:+s.opp,tb:(s.tb||'').trim()};
+    if(s.kind==='tb')o.kind='tb';
+    return o;
+  });
   if(!raw.length){flash('Inserisci almeno un set');return;}
-  // in memoria i game restano sempre "prima i miei": se ho perso, giro
+  // in memoria i punti restano sempre "prima i miei": se ho perso, giro
   const sets=d.result==='L'
-    ? raw.map(s=>({me:s.opp,opp:s.me,tb:flipScore(s.tb)}))
+    ? raw.map(s=>{const o={me:s.opp,opp:s.me,tb:flipScore(s.tb)};if(s.kind)o.kind=s.kind;return o;})
     : raw;
   if(!d.opponent.trim())d.opponent='Avversario';
   const m={
