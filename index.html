@@ -19,7 +19,7 @@
    GAME, SET & MATCH! — design tokens
    Stile "Tabellone": fondo scuro, numeri luminosi, dati incolonnati,
    angoli arrotondati e bordi chiari. Menù Liquid Glass.
-   Clay (Roland Garros) · Hard (US/AUS Open)
+   Vittoria verde · Pareggio giallo · Sconfitta rossa
    Display: Bebas Neue · Testo: Work Sans
    ============================================================ */
 :root{
@@ -40,7 +40,7 @@
   --f-sans:'Work Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
   --f-display:'Bebas Neue',var(--f-sans);
 }
-/* ---- DARK (default) ---- */
+/* ---- SCURO (default) ---- */
 :root, html[data-theme="dark"]{
   --bg:#000;
   --card-solid:#0A0C09;
@@ -54,6 +54,7 @@
   --track:rgba(255,255,255,.08);
   --hm-empty:rgba(255,255,255,.06);
   --num:#D9F52B;
+  --draw:#F5C93A;
   --glow-num:0 0 14px rgba(217,245,43,.5);
   --ring-glow:drop-shadow(0 0 6px rgba(217,245,43,.45));
   --stencil:rgba(217,245,43,.45);
@@ -69,7 +70,7 @@
   --tab-on-bg:rgba(255,255,255,.14);
   --tab-on:var(--optic);
 }
-/* ---- LIGHT ---- */
+/* ---- CHIARO ---- */
 html[data-theme="light"]{
   --bg:#F3F5EF;
   --card-solid:#FFFFFF;
@@ -83,6 +84,7 @@ html[data-theme="light"]{
   --track:rgba(16,28,14,.09);
   --hm-empty:rgba(16,28,14,.07);
   --num:#67840A;
+  --draw:#8A6A00;
   --glow-num:none;
   --ring-glow:none;
   --stencil:rgba(103,132,10,.5);
@@ -150,10 +152,10 @@ main{
 .iconbtn:active{transform:translateY(-50%) scale(.92)}
 .iconbtn svg{width:18px;height:18px;stroke:var(--txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- toast pill ---------- */
+/* ---------- toast ---------- */
 #pill{
   position:fixed;left:50%;transform:translate(-50%,-140%);
-  top:calc(var(--safe-t) + 2px);z-index:120;
+  top:calc(var(--safe-t) + 2px);z-index:200;
   display:flex;align-items:center;gap:9px;
   padding:9px 15px;border-radius:100px;
   background:#0B100D;color:#F2F6F1;border:1px solid rgba(255,255,255,.16);
@@ -218,28 +220,23 @@ nav.tabs{
   color:var(--txt-3);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--card-brd);
 }
 .clabel em{font-style:normal;color:var(--txt-2);opacity:.75}
+.clabel b{font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.04em;color:var(--num);text-shadow:var(--glow-num);vertical-align:-1px}
 .sec{margin:24px 0 11px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
 .sec h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:20px;letter-spacing:.05em;text-transform:uppercase}
 .sec .hint{font-size:10px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.12em;background:none}
 
 /* profilo / hero */
 .avatar{
-  width:70px;height:70px;border-radius:20px;flex:none;object-fit:cover;margin:0 auto;
+  width:78px;height:78px;border-radius:22px;flex:none;object-fit:cover;margin:0 auto;
   background:var(--field);border:1px solid var(--card-brd);
   display:grid;place-items:center;
-  font-family:var(--f-display);font-size:30px;font-weight:400;
+  font-family:var(--f-display);font-size:32px;font-weight:400;
   color:var(--num);text-shadow:var(--glow-num);
 }
-.hero .name{font-family:var(--f-display);font-weight:400;font-size:28px;letter-spacing:.02em;margin:12px 0 3px}
-.hero .meta{font-size:11px;color:var(--txt-2);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
-.streak{
-  display:inline-flex;align-items:center;gap:5px;margin-top:11px;
-  padding:5px 12px;border-radius:100px;font-size:11px;font-weight:800;
-  text-transform:uppercase;letter-spacing:.06em;
-}
-.streak.w{background:rgba(46,209,122,.14);color:var(--win);border:1px solid rgba(46,209,122,.34)}
-.streak.l{background:rgba(255,92,116,.12);color:var(--loss);border:1px solid rgba(255,92,116,.32)}
-.streak.n{background:var(--field);color:var(--txt-3);border:1px solid var(--field-brd)}
+.hero .name{font-family:var(--f-display);font-weight:400;font-size:30px;letter-spacing:.02em;margin:13px 0 6px}
+.hero .name .flag{font-family:var(--f-sans);font-size:22px;vertical-align:2px;margin-right:6px;text-shadow:none}
+.hero .meta{font-size:10.5px;color:var(--txt-2);font-weight:800;text-transform:uppercase;letter-spacing:.08em;line-height:1.7}
+.hero .meta .lvl{color:var(--num);text-shadow:var(--glow-num)}
 
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;padding-top:14px;border-top:1px solid var(--card-brd)}
 .kpi{padding:0 4px}
@@ -252,7 +249,7 @@ nav.tabs{
 
 /* segmented */
 .seg{display:flex;gap:4px;padding:4px;background:var(--field);border-radius:100px;border:1px solid var(--field-brd)}
-.seg button{flex:1;padding:9px 6px;border-radius:100px;font-size:12px;font-weight:800;color:var(--txt-2);transition:.18s;text-transform:uppercase;letter-spacing:.06em}
+.seg button{flex:1;padding:9px 6px;border-radius:100px;font-size:12px;font-weight:800;color:var(--txt-2);transition:.18s;text-transform:uppercase;letter-spacing:.06em;min-width:0}
 .seg button.on{background:var(--txt);color:var(--bg)}
 
 /* chips */
@@ -266,10 +263,18 @@ nav.tabs{
 .chip.on{background:var(--optic);border-color:var(--optic);color:#0F1508}
 .chip.on.w{background:var(--win);border-color:var(--win);color:#04170D}
 .chip.on.l{background:var(--loss);border-color:var(--loss);color:#2A0409}
+.chip.on.d{background:#F5C93A;border-color:#F5C93A;color:#2A1F00}
 .chip.on.clay{background:var(--clay);border-color:var(--clay);color:#2A0904}
 .chip.on.hard{background:var(--hard);border-color:var(--hard);color:#EAF2FF}
 
+/* filtri storico */
+.frow{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.flab{flex:none;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3);width:70px;text-align:left;line-height:1.2}
+.fchips{flex:1;display:flex;gap:6px;min-width:0}
+.fchips .chip{flex:1 1 0;min-width:0;padding:9px 4px;text-align:center;font-size:10px;letter-spacing:.03em;overflow:hidden;text-overflow:ellipsis}
+
 /* badge superficie */
+.sdot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:6px}
 .sbadge{
   display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;
   font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#fff;
@@ -293,19 +298,44 @@ nav.tabs{
   width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;margin-left:3px;
   font-family:var(--f-display);font-size:16px;font-weight:400;
 }
-.res.w{background:rgba(46,209,122,.13);color:var(--win);border:1px solid rgba(46,209,122,.4)}
-.res.l{background:rgba(255,92,116,.11);color:var(--loss);border:1px solid rgba(255,92,116,.38)}
+.res.w,.fres.w,.fdot.w{background:rgba(46,209,122,.13);color:var(--win);border:1px solid rgba(46,209,122,.4)}
+.res.l,.fres.l,.fdot.l{background:rgba(255,92,116,.11);color:var(--loss);border:1px solid rgba(255,92,116,.38)}
+.res.d,.fres.d,.fdot.d{background:rgba(245,201,58,.14);color:var(--draw);border:1px solid rgba(245,201,58,.4)}
 .mrow .mid{flex:1;min-width:0}
 .mrow .opp{font-size:13.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mrow .opp.w{color:var(--win)}
 .mrow .opp.l{color:var(--loss)}
+.mrow .opp.d{color:var(--draw)}
 .mrow .sub{font-size:10px;color:var(--txt-3);font-weight:700;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .score{display:flex;gap:7px;align-items:center;font-weight:800;font-size:14px;flex:none}
 .score .st{position:relative;color:var(--win)}
 .score .st.lost{color:var(--loss)}
+.score .st.tie{color:var(--draw)}
 .score .tb{position:absolute;top:-6px;right:-8px;font-size:9px;color:var(--txt-3);font-weight:700}
 
+/* forma recente a colonne */
+.fgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:16px}
+.fcol{display:flex;flex-direction:column;gap:5px;min-width:0}
+.fini,.fres{
+  width:100%;aspect-ratio:1;border-radius:7px;display:grid;place-items:center;
+  font-family:var(--f-display);font-weight:400;font-size:14px;line-height:1;
+}
+.fini{background:var(--field);border:1px solid var(--field-brd);color:var(--txt-2)}
+.fini:active,.fres:active{transform:scale(.9)}
+
 /* grafici */
+.rings{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;align-items:start}
+.ring{position:relative;width:100%;max-width:104px;margin:0 auto}
+.ring svg{display:block;width:100%;height:auto}
+.ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .mid b{
+  display:block;font-family:var(--f-display);font-weight:400;font-size:24px;letter-spacing:.02em;
+  color:var(--num);text-shadow:var(--glow-num);
+}
+.ringlab{margin-top:8px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3)}
+.ringsub{font-size:10.5px;font-weight:700;color:var(--txt-2);margin-top:2px;font-variant-numeric:tabular-nums}
+.ringarc{filter:var(--ring-glow)}
+
 .donut{position:relative;width:150px;height:150px;margin:0 auto}
 .donut .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
 .donut .mid b{
@@ -313,40 +343,27 @@ nav.tabs{
   color:var(--num);text-shadow:var(--glow-num);
 }
 .donut .mid span{font-size:9px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.12em}
-.ringarc{filter:var(--ring-glow)}
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--card-brd)}
 .lg{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--txt-2)}
 .lg i{width:8px;height:8px;border-radius:2px;flex:none}
 .lg b{margin-left:auto;font-weight:800;color:var(--txt);font-variant-numeric:tabular-nums}
 
 .bars{display:flex;flex-direction:column;gap:14px;text-align:left}
-.bline .t{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:800;margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em}
-.bline .t span{color:var(--txt-3);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.03em}
+.bline .t{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:800;margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em;gap:8px}
+.bline .t span{color:var(--txt-3);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.03em;white-space:nowrap}
 .track{height:8px;border-radius:100px;background:var(--track);overflow:hidden}
 .fill{height:100%;border-radius:100px;transition:width .6s cubic-bezier(.2,.9,.3,1)}
 
+/* superfici: barra unica sfumata */
+.blend .r2{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.blend .r2 small{display:block;font-size:10px;color:var(--txt-3);font-weight:700;letter-spacing:.03em;margin-top:2px;text-transform:none}
+.blend .r2 .b{text-align:right}
+
 .formrow{display:flex;gap:5px;margin-top:14px;flex-wrap:wrap;justify-content:center}
 .fdot{width:23px;height:23px;border-radius:7px;display:grid;place-items:center;font-family:var(--f-display);font-size:13px}
-.fdot.w{background:rgba(46,209,122,.14);color:var(--win);border:1px solid rgba(46,209,122,.34)}
-.fdot.l{background:rgba(255,92,116,.12);color:var(--loss);border:1px solid rgba(255,92,116,.32)}
 
-.hmlegend{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;font-size:10px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.hmlegend{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;font-size:9.5px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;flex-wrap:wrap}
 .hmlegend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:-1px}
-
-/* confronto periodi */
-.cmp{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
-.cmp + .cmp{margin-top:14px;padding-top:14px;border-top:1px solid var(--card-brd)}
-.cmp .side{min-width:0}
-.cmp .side .pl{font-size:9.5px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.09em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cmp .side b{display:block;font-family:var(--f-display);font-weight:400;font-size:26px;margin-top:3px;letter-spacing:.02em}
-.cmp .side small{display:block;font-size:10.5px;color:var(--txt-2);font-weight:700;margin-top:1px;font-variant-numeric:tabular-nums}
-.cmp .side.now b{color:var(--num);text-shadow:var(--glow-num)}
-.delta{
-  font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:100px;white-space:nowrap;
-  background:var(--field);color:var(--txt-3);border:1px solid var(--field-brd);
-}
-.delta.up{background:rgba(46,209,122,.14);color:var(--win);border-color:rgba(46,209,122,.34)}
-.delta.down{background:rgba(255,92,116,.12);color:var(--loss);border-color:rgba(255,92,116,.32)}
 
 /* form */
 label.fl{display:block;font-size:10px;font-weight:800;color:var(--txt-3);text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px 3px;text-align:left}
@@ -354,7 +371,7 @@ label.fl{display:block;font-size:10px;font-weight:800;color:var(--txt-3);text-tr
   width:100%;min-width:0;padding:13px 14px;border-radius:15px;background:var(--field);
   border:1px solid var(--field-brd);color:var(--txt);outline:none;transition:.18s;
 }
-input.field[type="date"],input.field[type="time"]{padding-left:10px;padding-right:6px}
+input.field[type="date"]{padding-left:10px;padding-right:6px}
 .field:focus{border-color:var(--optic);box-shadow:0 0 0 3px rgba(217,245,43,.14)}
 textarea.field{min-height:96px;resize:none;line-height:1.45}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -403,6 +420,7 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 }
 .resultbanner.w{background:rgba(46,209,122,.12);color:var(--win);border-color:rgba(46,209,122,.3)}
 .resultbanner.l{background:rgba(255,92,116,.1);color:var(--loss);border-color:rgba(255,92,116,.28)}
+.resultbanner.d{background:rgba(245,201,58,.12);color:var(--draw);border-color:rgba(245,201,58,.32)}
 .resultbanner.n{background:var(--field);color:var(--txt-3);border-color:var(--field-brd)}
 
 /* dettaglio match */
@@ -424,7 +442,6 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 
 .statline{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--card-brd);text-align:left}
 .statline:last-child{border:0;padding-bottom:0}
-.statline:first-child{padding-top:0}
 .statline .k{flex:1;font-size:12px;color:var(--txt-2);font-weight:700;text-transform:uppercase;letter-spacing:.05em;min-width:0}
 .statline .k small{display:block;font-size:10.5px;color:var(--txt-3);font-weight:600;text-transform:none;letter-spacing:0;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .statline .v{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;flex:none}
@@ -438,6 +455,24 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 .empty .ball{width:62px;height:62px;margin:0 auto 14px;opacity:.9}
 .empty h3{margin:0 0 6px;font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--txt);letter-spacing:.03em}
 .empty p{margin:0;font-size:13.5px;line-height:1.5}
+
+/* ritaglio foto profilo */
+.cropwrap{
+  position:fixed;inset:0;z-index:180;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.cropbox{
+  width:100%;max-width:330px;background:var(--card-solid);border:1px solid var(--card-brd);
+  border-radius:24px;padding:20px 18px;text-align:center;
+}
+.cropview{
+  width:250px;height:250px;margin:0 auto;border-radius:22px;overflow:hidden;position:relative;
+  background:#000;border:1px solid var(--card-brd);touch-action:none;cursor:grab;
+}
+.cropview img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.cropview:active{cursor:grabbing}
+.crange{width:100%;margin:14px 0 4px;accent-color:var(--optic)}
+.crophint{font-size:10.5px;color:var(--txt-3);font-weight:700;margin-top:10px;line-height:1.5}
 
 .fade{animation:fade .28s ease both}
 @keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
@@ -453,6 +488,19 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
   <main id="view"></main>
 </div>
 <nav class="tabs" id="tabs"></nav>
+
+<div id="cropper" class="cropwrap hidden">
+  <div class="cropbox">
+    <div class="clabel">Regola la foto</div>
+    <div class="cropview" id="cropview"><img id="cropimg" alt=""></div>
+    <input type="range" id="cropzoom" class="crange" min="100" max="320" value="100">
+    <div class="crophint">Trascina per spostare · usa il cursore per lo zoom</div>
+    <div class="grid2" style="margin-top:16px">
+      <button class="btn ghost sm" data-act="cropcancel">Annulla</button>
+      <button class="btn sm" data-act="cropsave">Salva</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -484,7 +532,7 @@ window.dispatchEvent(new Event('gsm-fb-ready'));
 </script>
 <script>
 /* =========================================================
-   STATE
+   STATO
    ========================================================= */
 const KEY='myTennis.v1';
 const SURF={
@@ -493,15 +541,31 @@ const SURF={
 };
 const SKEYS=Object.keys(SURF);
 const MESI=['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
-const blank=()=>({profile:{name:'',hand:'Destro',level:'',avatar:''},matches:[],theme:''});
+const ORARI=['19:00','19:30'];
+const DURATE=[60,90,120,150,180,210,240];
+const NAZ=[['IT','Italia'],['AL','Albania'],['AR','Argentina'],['AT','Austria'],['BE','Belgio'],['BR','Brasile'],
+  ['HR','Croazia'],['FR','Francia'],['DE','Germania'],['GR','Grecia'],['MA','Marocco'],['NL','Paesi Bassi'],
+  ['PL','Polonia'],['PT','Portogallo'],['GB','Regno Unito'],['RO','Romania'],['RU','Russia'],['RS','Serbia'],
+  ['ES','Spagna'],['US','Stati Uniti'],['SE','Svezia'],['CH','Svizzera'],['TN','Tunisia'],['UA','Ucraina']];
+
+const blankProfile=()=>({name:'',hand:'Destro',level:'',avatar:'',age:'',nat:'IT',city:'',height:''});
+const blank=()=>({profile:blankProfile(),matches:[],theme:''});
 let S=load();
 let view={n:'home'};
-let draft=null;      // partita in creazione/modifica
-let filt={tf:'all', surf:'all', res:'all', q:''};
+let draft=null;
+let filt={surf:new Set(SKEYS), res:new Set(['W','D','L']), q:''};
 let hmYear=new Date().getFullYear();
+let gid=0;
 
 function load(){
-  try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&r.matches)return Object.assign(blank(),r);}catch(e){}
+  try{
+    const r=JSON.parse(localStorage.getItem(KEY));
+    if(r&&r.matches){
+      const o=Object.assign(blank(),r);
+      o.profile=Object.assign(blankProfile(),r.profile||{});
+      return o;
+    }
+  }catch(e){}
   return blank();
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
@@ -561,7 +625,7 @@ function mergeFromCloud(remote){
   (S.matches||[]).forEach(m=>map[m.id]=m);
   (remote.matches||[]).forEach(m=>map[m.id]=m);
   S.matches=Object.values(map);
-  if(remote.profile&&remote.profile.name)S.profile=Object.assign({},S.profile,remote.profile);
+  if(remote.profile)S.profile=Object.assign(S.profile,remote.profile);
   if(remote.theme)S.theme=remote.theme;
   localStorage.setItem(KEY,JSON.stringify(S));
   applyTheme();render();
@@ -569,7 +633,7 @@ function mergeFromCloud(remote){
 window.addEventListener('gsm-fb-ready', initCloud);
 function haptic(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
 
-/* theme */
+/* tema */
 function applyTheme(){
   const t=S.theme||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
   document.documentElement.dataset.theme=t;
@@ -584,34 +648,30 @@ function setsWon(m){
   (m.sets||[]).forEach(s=>{ if(s.me>s.opp)a++; else if(s.opp>s.me)b++; });
   return [a,b];
 }
+/* 'W' vittoria · 'L' sconfitta · 'D' pareggio · null se non c'è punteggio */
 function outcome(m){
+  if(!m.sets||!m.sets.length)return null;
   const [a,b]=setsWon(m);
-  if(a===b) return null;
+  if(a===b)return 'D';
   return a>b?'W':'L';
 }
+function resClass(o){return o==='W'?'w':o==='L'?'l':o==='D'?'d':'';}
+function resLetter(o){return o==='W'?'V':o==='L'?'X':o==='D'?'P':'–';}
+function scoreStr(m){return (m.sets||[]).map(s=>s.me+'-'+s.opp).join(' ')||'–';}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function sorted(){return S.matches.slice().sort((x,y)=>(y.date+ (y.time||'')).localeCompare(x.date+(x.time||'')));}
 
-function inTf(m,tf){
-  if(tf==='all')return true;
-  const d=new Date(m.date+'T00:00:00'),n=new Date();
-  if(tf==='m')return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
-  if(tf==='y')return d.getFullYear()===n.getFullYear();
-  return true;
-}
-function pool(tf){return sorted().filter(m=>inTf(m,tf));}
-
 function record(list){
-  let w=0,l=0;list.forEach(m=>{const o=outcome(m);if(o==='W')w++;else if(o==='L')l++;});
-  return {w,l,tot:w+l,pct:w+l?Math.round(w/(w+l)*100):0};
-}
-function streak(){
-  const l=sorted();let t=null,n=0;
-  for(const m of l){const o=outcome(m);if(!o)continue;if(t===null){t=o;n=1;}else if(o===t)n++;else break;}
-  return {t,n};
+  let w=0,l=0,d=0;
+  list.forEach(m=>{const o=outcome(m);if(o==='W')w++;else if(o==='L')l++;else if(o==='D')d++;});
+  const tot=w+l+d;
+  return {w,l,d,tot,pct:tot?Math.round(w/tot*100):0};
 }
 function gamesRec(list){
   let g=0,o=0;list.forEach(m=>(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0}));return{g,o};
+}
+function setsRec(list){
+  let a=0,b=0;list.forEach(m=>{const[x,y]=setsWon(m);a+=x;b+=y;});return{a,b};
 }
 function dateLabel(iso,time){
   const d=new Date(iso+'T00:00:00');
@@ -625,15 +685,26 @@ function relDay(iso){
   if(diff<7&&diff>0)return diff+' giorni fa';
   return d.toLocaleDateString('it-IT',{day:'2-digit',month:'short'});
 }
+function monthLabel(iso){
+  const d=new Date(iso+'T00:00:00');
+  return cap(d.toLocaleDateString('it-IT',{month:'long',year:'numeric'}));
+}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
-/* elenchi per i suggerimenti (avversari già affrontati, campi già usati) */
+function durLabel(min){
+  const h=Math.floor(min/60),m=min%60;
+  return h+(h===1?' ora':' ore')+(m?' e '+m:'');
+}
+function flagEmoji(cc){
+  cc=(cc||'').trim().toUpperCase();
+  if(!/^[A-Z]{2}$/.test(cc))return '';
+  return String.fromCodePoint(...[...cc].map(c=>0x1F1E6+c.charCodeAt(0)-65));
+}
 function uniqueField(f){
   const seen=new Map();
   S.matches.forEach(m=>{
-    const v=(m[f]||'').trim();
-    if(!v)return;
+    const v=(m[f]||'').trim();if(!v)return;
     const k=v.toLowerCase();
-    seen.set(k,(seen.get(k)||{v,n:0}));
+    if(!seen.has(k))seen.set(k,{v,n:0});
     seen.get(k).n++;
   });
   return [...seen.values()].sort((a,b)=>b.n-a.n||a.v.localeCompare(b.v)).map(x=>x.v);
@@ -642,16 +713,41 @@ function uniqueField(f){
 /* =========================================================
    GRAFICI SVG
    ========================================================= */
+function ring(pct,label,sub){
+  const id='rg'+(++gid);
+  const r=42,c=2*Math.PI*r,off=c*(1-pct/100);
+  const ang=-90+(pct/100)*360;
+  return `<div>
+    <div class="ring">
+      <svg viewBox="0 0 104 104">
+        <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="var(--num)"/><stop offset="1" stop-color="var(--win)"/>
+        </linearGradient></defs>
+        <circle cx="52" cy="52" r="${r}" fill="none" stroke="var(--track)" stroke-width="9"/>
+        <circle class="ringarc" cx="52" cy="52" r="${r}" fill="none" stroke="url(#${id})" stroke-width="9" stroke-linecap="round"
+          stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 52 52)">
+          <animate attributeName="stroke-dashoffset" from="${c.toFixed(1)}" to="${off.toFixed(1)}" dur=".85s" fill="freeze"
+            calcMode="spline" keySplines=".2 .9 .3 1" keyTimes="0;1"/>
+        </circle>
+        <circle cx="52" cy="10" r="4.4" fill="var(--win)" transform="rotate(${ang.toFixed(1)} 52 52)"/>
+      </svg>
+      <div class="mid"><b>${pct}%</b></div>
+    </div>
+    <div class="ringlab">${label}</div>
+    <div class="ringsub">${sub}</div>
+  </div>`;
+}
 function donut(pct,sub,lbl){
+  const id='dg'+(++gid);
   const r=60,c=2*Math.PI*r,off=c*(1-pct/100);
   const ang=-90+(pct/100)*360;
   return `<div class="donut">
     <svg viewBox="0 0 150 150" width="150" height="150">
-      <defs><linearGradient id="grd" x1="0" y1="0" x2="1" y2="1">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="var(--num)"/><stop offset="1" stop-color="var(--win)"/>
       </linearGradient></defs>
       <circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--track)" stroke-width="13"/>
-      <circle class="ringarc" cx="75" cy="75" r="${r}" fill="none" stroke="url(#grd)" stroke-width="13" stroke-linecap="round"
+      <circle class="ringarc" cx="75" cy="75" r="${r}" fill="none" stroke="url(#${id})" stroke-width="13" stroke-linecap="round"
         stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 75 75)">
         <animate attributeName="stroke-dashoffset" from="${c.toFixed(1)}" to="${off.toFixed(1)}" dur=".85s" fill="freeze"
           calcMode="spline" keySplines=".2 .9 .3 1" keyTimes="0;1"/>
@@ -661,41 +757,18 @@ function donut(pct,sub,lbl){
     <div class="mid"><b>${sub}</b><span>${lbl}</span></div>
   </div>`;
 }
-function sparkline(list){
-  const seq=list.slice().reverse();
-  if(seq.length<2)return '';
-  let v=0;const pts=[0];
-  seq.forEach(m=>{const o=outcome(m);v+= o==='W'?1:o==='L'?-1:0;pts.push(v);});
-  const W=260,H=110,mx=Math.max(1,Math.max(...pts.map(Math.abs)));
-  const X=i=>i/(pts.length-1)*W, Y=p=>H/2 - (p/mx)*(H/2-10);
-  const d=pts.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p).toFixed(1)}`).join(' ');
-  const area=d+` L${W},${H} L0,${H} Z`;
-  const up=pts[pts.length-1]>=0;
-  const col=up?'var(--num)':'var(--loss)';
-  const lastY=Y(pts[pts.length-1]);
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:104px;overflow:visible">
-    <defs><linearGradient id="gspk" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${col}" stop-opacity=".38"/><stop offset="1" stop-color="${col}" stop-opacity="0"/>
-    </linearGradient></defs>
-    <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="var(--card-brd)" stroke-width="1" stroke-dasharray="3 4"/>
-    <path d="${area}" fill="url(#gspk)"/>
-    <path d="${d}" fill="none" stroke="${col}" stroke-width="2.6" vector-effect="non-scaling-stroke"
-      stroke-linejoin="round" stroke-linecap="round"/>
-    <circle cx="${(W-2).toFixed(1)}" cy="${lastY.toFixed(1)}" r="5" fill="${col}" vector-effect="non-scaling-stroke"/>
-  </svg>`;
-}
 /* calendario dell'anno: un quadratino per giorno */
 function heatmap(year){
   const day={};
   S.matches.forEach(m=>{
     if(!m.date||m.date.slice(0,4)!==String(year))return;
     const o=outcome(m);if(!o)return;
-    const d=(day[m.date]=day[m.date]||{w:0,l:0});
-    if(o==='W')d.w++;else d.l++;
+    const d=(day[m.date]=day[m.date]||{w:0,l:0,d:0});
+    if(o==='W')d.w++;else if(o==='L')d.l++;else d.d++;
   });
   const jan=new Date(year,0,1);
   const start=new Date(jan);
-  start.setDate(start.getDate()-((jan.getDay()+6)%7)); // parte dal lunedì
+  start.setDate(start.getDate()-((jan.getDay()+6)%7));
   const CELL=9,GAP=2.6,STEP=CELL+GAP,COLS=53;
   const W=COLS*STEP,H=14+7*STEP;
   let cells='',labels='',lastMon=-1;
@@ -706,7 +779,7 @@ function heatmap(year){
       const iso=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
       const rec=day[iso];
       let f='var(--hm-empty)';
-      if(rec)f = rec.w&&rec.l ? 'var(--num)' : rec.w ? 'var(--win)' : 'var(--loss)';
+      if(rec)f = rec.w>rec.l ? 'var(--win)' : rec.l>rec.w ? 'var(--loss)' : 'var(--draw)';
       cells+=`<rect x="${(c*STEP).toFixed(1)}" y="${(14+r*STEP).toFixed(1)}" width="${CELL}" height="${CELL}" rx="2.4" fill="${f}"/>`;
       if(r===0&&dt.getMonth()!==lastMon){
         lastMon=dt.getMonth();
@@ -750,6 +823,7 @@ const I={
 function go(n,p){view={n,p};window.scrollTo(0,0);render();}
 function render(){
   applyTheme();
+  gid=0;
   const v=document.getElementById('view');
   let h='',top='';
   switch(view.n){
@@ -793,28 +867,36 @@ function flash(msg){
   const p=document.getElementById('pill');
   p.querySelector('.lbl').innerHTML=esc(msg);
   p.classList.add('on');haptic();
-  clearTimeout(pillT);pillT=setTimeout(()=>{pillT=null;p.classList.remove('on');},1900);
+  clearTimeout(pillT);pillT=setTimeout(()=>{pillT=null;p.classList.remove('on');},2400);
 }
 
 /* =========================================================
    VISTA — HOME
    ========================================================= */
 function vHome(){
-  const all=sorted(), r=record(all), st=streak();
+  const all=sorted(), r=record(all);
   const last=all.slice(0,10);
-  const name=S.profile.name||'Il tuo profilo';
-  const ini=(S.profile.name||'?').trim().charAt(0).toUpperCase()||'?';
-  const av=S.profile.avatar?`<img class="avatar" src="${S.profile.avatar}" alt="">`:`<div class="avatar">${esc(ini)}</div>`;
+  const p=S.profile;
+  const name=p.name||'Il tuo profilo';
+  const ini=(p.name||'?').trim().charAt(0).toUpperCase()||'?';
+  const av=p.avatar?`<img class="avatar" src="${p.avatar}" alt="">`:`<div class="avatar">${esc(ini)}</div>`;
+  const flag=flagEmoji(p.nat);
+
+  const bits=[];
+  if(p.hand)bits.push(esc(p.hand));
+  if(p.age)bits.push(esc(p.age)+' anni');
+  if(p.height)bits.push(esc(p.height)+' cm');
+  if(p.city)bits.push(esc(p.city));
+  let meta=bits.join(' · ');
+  if(p.level)meta+=(meta?' · ':'')+`<span class="lvl">${esc(p.level)}</span>`;
 
   let h=`<section class="card hero">
     ${av}
-    <h3 class="name">${esc(name)}</h3>
-    <div class="meta">${esc(S.profile.hand||'Destro')}${S.profile.level?' · '+esc(S.profile.level):''}</div>
-    ${st.t?`<div class="streak ${st.t==='W'?'w':'l'}">${st.t==='W'?'▲':'▼'} ${st.n} ${st.t==='W'?'vittor'+(st.n>1?'ie':'ia'):'sconfitt'+(st.n>1?'e':'a')} di fila</div>`
-          :`<div class="streak n">Nessuna striscia</div>`}
+    <h3 class="name">${flag?`<span class="flag">${flag}</span>`:''}${esc(name)}</h3>
+    ${meta?`<div class="meta">${meta}</div>`:''}
     <div class="kpis">
       <div class="kpi"><b>${r.tot}</b><span>Match</span></div>
-      <div class="kpi"><b>${r.w}-${r.l}</b><span>Record</span></div>
+      <div class="kpi"><b>${r.w}-${r.l}${r.d?'-'+r.d:''}</b><span>Record</span></div>
       <div class="kpi"><b>${r.pct}%</b><span>Vittorie</span></div>
     </div>
   </section>`;
@@ -830,44 +912,68 @@ function vHome(){
     </div>`;
   }
 
-  /* forma recente */
+  /* forma recente — colonne iniziale + esito */
   const lr=record(last);
   h+=`<section class="card">
     <div class="clabel">Forma recente <em>· ultime ${last.length}</em></div>
-    <div style="font-family:var(--f-display);font-size:34px;letter-spacing:.02em;color:var(--num);text-shadow:var(--glow-num)">${lr.w}-${lr.l}</div>
+    <div style="font-family:var(--f-display);font-size:34px;letter-spacing:.02em;color:var(--num);text-shadow:var(--glow-num)">${lr.w}-${lr.l}${lr.d?'-'+lr.d:''}</div>
     <div style="font-size:11px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-top:2px">${lr.pct}% di vittorie</div>
-    ${sparkline(last)}
-    <div class="formrow">${last.slice().reverse().map(m=>{const o=outcome(m);return `<div class="fdot ${o==='W'?'w':'l'}">${o==='W'?'V':o==='L'?'X':'–'}</div>`}).join('')}</div>
+    <div class="fgrid">
+      ${last.slice().reverse().map(m=>{
+        const o=outcome(m);
+        const nm=(m.opponent||'Avversario').trim();
+        const ic=nm.charAt(0).toUpperCase()||'?';
+        return `<div class="fcol">
+          <button class="fini" data-act="oppname" data-n="${esc(nm)}">${esc(ic)}</button>
+          <button class="fres ${resClass(o)}" data-act="mres" data-id="${m.id}">${resLetter(o)}</button>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-top:12px;line-height:1.5">Tocca l'iniziale per il nome, l'esito per il risultato</div>
   </section>`;
 
-  /* superfici */
-  const sBars=SKEYS.map(k=>{
-    const rr=record(all.filter(m=>m.surface===k));
-    if(!rr.tot)return '';
-    return bar(SURF[k].n,`${rr.tot}P · ${rr.w}V · ${rr.l}S`,rr.pct,`var(${SURF[k].c})`);
-  }).join('');
-  if(sBars)h+=`<section class="card">
-    <div class="clabel">Superfici <em>· all-time</em></div>
-    <div class="bars">${sBars}</div>
-  </section>`;
-
-  /* ultime partite */
-  h+=`<div class="sec"><h2>Ultime partite</h2><button class="hint" data-act="go" data-v="hist" style="color:var(--num)">Vedi tutte →</button></div>`;
-  h+=all.slice(0,4).map(mrow).join('');
+  /* superfici: barra unica sfumata */
+  h+=surfaceBlend(all);
   return h;
+}
+
+/* barra unica: più giochi su una superficie, più il colore tende a quella */
+function surfaceBlend(all){
+  const rc=record(all.filter(m=>m.surface==='clay'));
+  const rh=record(all.filter(m=>m.surface==='hard'));
+  const tot=rc.tot+rh.tot;
+  if(!tot)return '';
+  const p=Math.round(rc.tot/tot*100);
+  const a=Math.max(0,p-16), b=Math.min(100,p+16);
+  return `<section class="card">
+    <div class="clabel">Superfici <em>· all-time</em></div>
+    <div class="blend">
+      <div class="r2" style="margin-bottom:9px">
+        <div style="color:var(--clay-2)">Terra<small>${rc.tot} partite · ${rc.pct}%</small></div>
+        <div class="b" style="color:var(--hard-2)">Cemento<small>${rh.tot} partite · ${rh.pct}%</small></div>
+      </div>
+      <div class="track" style="height:12px">
+        <div class="fill" style="width:100%;background:linear-gradient(90deg,var(--clay) 0%,var(--clay-2) ${a}%,var(--hard-2) ${b}%,var(--hard) 100%)"></div>
+      </div>
+      <div class="r2" style="margin-top:9px">
+        <div><small>${rc.w}V · ${rc.l}S${rc.d?' · '+rc.d+'P':''}</small></div>
+        <div class="b"><small>${rh.w}V · ${rh.l}S${rh.d?' · '+rh.d+'P':''}</small></div>
+      </div>
+    </div>
+  </section>`;
 }
 
 function mrow(m){
   const o=outcome(m),s=SURF[m.surface]||SURF.hard;
   const sc=(m.sets||[]).map(x=>{
-    const lost=x.opp>x.me;
-    return `<div class="st${lost?' lost':''}">${x.me}-${x.opp}${x.tb?`<span class="tb">${esc(x.tb.split('-')[0]||'')}</span>`:''}</div>`;
+    const cls=x.opp>x.me?' lost':x.opp===x.me?' tie':'';
+    return `<div class="st${cls}">${x.me}-${x.opp}${x.tb?`<span class="tb">${esc(x.tb.split('-')[0]||'')}</span>`:''}</div>`;
   }).join('');
   return `<div class="mrow" data-act="detail" data-id="${m.id}">
     <div class="bar b-${s.cls}"></div>
-    <div class="res ${o==='W'?'w':'l'}">${o==='W'?'V':o==='L'?'X':'–'}</div>
+    <div class="res ${resClass(o)}">${resLetter(o)}</div>
     <div class="mid">
-      <div class="opp ${o==='W'?'w':'l'}">${esc(m.opponent||'Avversario')}</div>
+      <div class="opp ${resClass(o)}">${esc(m.opponent||'Avversario')}</div>
       <div class="sub">${relDay(m.date)} · ${s.n}${m.court?' · '+esc(m.court):''}${m.notes?' · 📝':''}</div>
     </div>
     <div class="score num">${sc}</div>
@@ -875,29 +981,23 @@ function mrow(m){
 }
 
 /* =========================================================
-   VISTA — STATISTICHE
+   VISTA — STATISTICHE (solo all-time)
    ========================================================= */
 function vStats(){
-  const list=pool(filt.tf), r=record(list);
-  let h=`<div class="seg" style="margin-bottom:14px">
-    ${[['m','Mese'],['y','Anno'],['all','All-Time']].map(([k,l])=>
-      `<button data-act="tf" data-k="${k}" class="${filt.tf===k?'on':''}">${l}</button>`).join('')}
-  </div>`;
+  const list=sorted(), r=record(list);
+  if(!list.length) return `<div class="empty">${ball()}<h3>Nessun dato</h3>
+    <p>Registra la tua prima partita per vedere le statistiche.</p></div>`;
 
-  if(!list.length) return h+`<div class="empty">${ball()}<h3>Nessun dato</h3>
-    <p>Non ci sono partite in questo periodo.</p></div>`;
+  const g=gamesRec(list), st=setsRec(list);
+  const setPct=(st.a+st.b)?Math.round(st.a/(st.a+st.b)*100):0;
+  const gamePct=(g.g+g.o)?Math.round(g.g/(g.g+g.o)*100):0;
 
-  const g=gamesRec(list);
-  let sw=0,sl=0;list.forEach(m=>{const[a,b]=setsWon(m);sw+=a;sl+=b;});
-
-  h+=`<section class="card">
-    <div class="clabel">Percentuale vittorie</div>
-    ${donut(r.pct,r.pct+'%',r.w+'V · '+r.l+'S')}
-    <div class="legend">
-      <div class="lg"><i style="background:var(--win)"></i>Vittorie<b>${r.w}</b></div>
-      <div class="lg"><i style="background:var(--loss)"></i>Sconfitte<b>${r.l}</b></div>
-      <div class="lg"><i style="background:var(--txt-3)"></i>Set<b>${sw}-${sl}</b></div>
-      <div class="lg"><i style="background:var(--txt-3);opacity:.5"></i>Game<b>${g.g}-${g.o}</b></div>
+  let h=`<section class="card">
+    <div class="clabel"><b>${r.tot}</b> partite giocate</div>
+    <div class="rings">
+      ${ring(r.pct,'Vittorie',`${r.w}V · ${r.l}S${r.d?' · '+r.d+'P':''}`)}
+      ${ring(setPct,'Set',`${st.a}-${st.b}`)}
+      ${ring(gamePct,'Game',`${g.g}-${g.o}`)}
     </div>
   </section>`;
 
@@ -905,93 +1005,80 @@ function vStats(){
   const sBars=SKEYS.map(k=>{
     const rr=record(list.filter(m=>m.surface===k));
     if(!rr.tot)return '';
-    return bar(`<span class="sbadge s-${SURF[k].cls}"><i></i>${SURF[k].n}</span>`,`${rr.tot}P · ${rr.w}V · ${rr.l}S`,rr.pct,`var(${SURF[k].c})`);
+    const col=`var(${SURF[k].c})`;
+    return bar(
+      `<span class="sdot" style="background:${col}"></span><span style="color:${col}">${SURF[k].n} · ${rr.tot}</span>`,
+      `${rr.w}V · ${rr.l}S${rr.d?' · '+rr.d+'P':''} · ${rr.pct}%`,
+      rr.pct,col);
   }).join('');
   h+=`<section class="card">
     <div class="clabel">Rendimento per superficie</div>
     <div class="bars">${sBars||'<div style="color:var(--txt-3);font-size:13px">Nessuna superficie registrata.</div>'}</div>
   </section>`;
 
-  /* andamento */
-  const lastN=list.slice(0,12);
+  /* andamento — ultime 10, esiti cliccabili */
+  const lastN=list.slice(0,10);
   h+=`<section class="card">
     <div class="clabel">Andamento <em>· ultime ${lastN.length}</em></div>
-    ${sparkline(lastN)}
-    <div class="formrow">${lastN.slice().reverse().map(m=>{const o=outcome(m);return `<div class="fdot ${o==='W'?'w':'l'}">${o==='W'?'V':o==='L'?'X':'–'}</div>`}).join('')}</div>
-    <div style="font-size:11px;color:var(--txt-3);margin-top:12px;font-weight:600;line-height:1.5">Linea cumulativa: sale con le vittorie, scende con le sconfitte.</div>
+    <div class="formrow" style="margin-top:0">
+      ${lastN.slice().reverse().map(m=>{const o=outcome(m);
+        return `<button class="fdot ${resClass(o)}" data-act="mres" data-id="${m.id}">${resLetter(o)}</button>`;}).join('')}
+    </div>
+    <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-top:12px;line-height:1.5">Tocca un esito per vedere avversario e risultato</div>
   </section>`;
 
-  h+=cmpCard();
   h+=recordsCard();
   h+=calendarCard();
 
   /* avversari frequenti → testa a testa */
   const byOpp={};
   list.forEach(m=>{const o=(m.opponent||'—').trim();(byOpp[o]=byOpp[o]||[]).push(m)});
-  const tops=Object.entries(byOpp).sort((a,b)=>b[1].length-a[1].length).slice(0,6);
+  const tops=Object.entries(byOpp).sort((a,b)=>b[1].length-a[1].length).slice(0,10);
   if(tops.length){
     h+=`<section class="card"><div class="clabel">Avversari frequenti</div>`;
     tops.forEach(([o,ms])=>{const rr=record(ms);
       h+=`<div class="statline tap" data-act="opp" data-n="${esc(o)}">
         <div class="k" style="color:var(--txt);font-weight:800">${esc(o)}<small>${ms.length} partite</small></div>
-        <div class="v" style="color:${rr.w>=rr.l?'var(--win)':'var(--loss)'}">${rr.w}-${rr.l}</div>
+        <div class="v" style="color:${rr.w>rr.l?'var(--win)':rr.l>rr.w?'var(--loss)':'var(--draw)'}">${rr.w}-${rr.l}${rr.d?'-'+rr.d:''}</div>
         <div class="go">›</div></div>`;});
     h+=`</section>`;
   }
   return h;
 }
 
-/* --- confronto periodi (funzione 5) --- */
-function cmpCard(){
-  const n=new Date();
-  const mk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-  const prevM=new Date(n.getFullYear(),n.getMonth()-1,1);
-  const byPrefix=(k,len)=>record(S.matches.filter(m=>m.date&&m.date.slice(0,len)===k));
-  const rows=[
-    { lbl:'Mese',
-      aL:cap(n.toLocaleDateString('it-IT',{month:'long'})),      a:byPrefix(mk(n),7),
-      bL:cap(prevM.toLocaleDateString('it-IT',{month:'long'})),  b:byPrefix(mk(prevM),7) },
-    { lbl:'Anno',
-      aL:String(n.getFullYear()),     a:byPrefix(String(n.getFullYear()),4),
-      bL:String(n.getFullYear()-1),   b:byPrefix(String(n.getFullYear()-1),4) }
-  ];
-  const body=rows.map(row=>{
-    const d=row.a.tot&&row.b.tot?row.a.pct-row.b.pct:null;
-    const cls=d===null?'':d>0?' up':d<0?' down':'';
-    const txt=d===null?'—':(d>0?'▲ +':d<0?'▼ ':'')+d+'%';
-    return `<div class="cmp">
-      <div class="side now">
-        <div class="pl">${esc(row.aL)}</div>
-        <b>${row.a.tot?row.a.pct+'%':'–'}</b>
-        <small>${row.a.w}V · ${row.a.l}S</small>
-      </div>
-      <div class="delta${cls}">${txt}</div>
-      <div class="side" style="text-align:right">
-        <div class="pl">${esc(row.bL)}</div>
-        <b style="color:var(--txt-2)">${row.b.tot?row.b.pct+'%':'–'}</b>
-        <small>${row.b.w}V · ${row.b.l}S</small>
-      </div>
-    </div>`;
-  }).join('');
-  return `<section class="card"><div class="clabel">Confronto periodi</div>${body}</section>`;
+/* --- record personali --- */
+function bestStreak(type){
+  const chrono=sorted().slice().reverse();
+  let best=0,bestFrom=null,bestTo=null,cur=0,curFrom=null;
+  chrono.forEach(m=>{
+    if(outcome(m)===type){
+      if(cur===0)curFrom=m;
+      cur++;
+      if(cur>best){best=cur;bestFrom=curFrom;bestTo=m;}
+    }else cur=0;
+  });
+  return {n:best,from:bestFrom,to:bestTo};
 }
-
-/* --- record personali (funzione 2) --- */
+function widest(type){
+  let best=null,bd=-1;
+  sorted().forEach(m=>{
+    if(outcome(m)!==type)return;
+    let g=0,o=0;(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0});
+    const diff=type==='W'?g-o:o-g;
+    if(diff>bd){bd=diff;best=m;}
+  });
+  return best;
+}
+function streakWhen(s){
+  if(!s.n)return '';
+  const a=monthLabel(s.from.date), b=monthLabel(s.to.date);
+  return a===b?a:a+' → '+b;
+}
 function recordsCard(){
   const all=sorted();
   if(!all.length)return '';
-  const chrono=all.slice().reverse();
-  let bw=0,cw=0,bl=0,cl=0;
-  chrono.forEach(m=>{const o=outcome(m);
-    if(o==='W'){cw++;cl=0;if(cw>bw)bw=cw;}
-    else if(o==='L'){cl++;cw=0;if(cl>bl)bl=cl;}});
-
-  let big=null,bd=-1;
-  all.forEach(m=>{
-    if(outcome(m)!=='W')return;
-    let g=0,o=0;(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0});
-    if(g-o>bd){bd=g-o;big=m;}
-  });
+  const sw=bestStreak('W'), sl=bestStreak('L');
+  const bigW=widest('W'), bigL=widest('L');
 
   const byM={};all.forEach(m=>{const k=(m.date||'').slice(0,7);if(k)(byM[k]=byM[k]||[]).push(m)});
   let bm=null,bmw=-1;
@@ -1005,26 +1092,21 @@ function recordsCard(){
     <div class="v"${col?` style="color:${col}"`:''}>${v}</div></div>`;
 
   let h=`<section class="card"><div class="clabel">Record personali</div>`;
-  h+=line('Striscia di vittorie','La più lunga di sempre',bw||'–','var(--win)');
-  h+=line('Striscia di sconfitte','La più lunga di sempre',bl||'–','var(--loss)');
-  if(big){
-    const [a,b]=setsWon(big);
-    h+=line('Vittoria più netta',esc(big.opponent||'Avversario')+' · '+dateLabel(big.date),a+'-'+b,'var(--win)');
-  }
-  if(bm){
-    const d=new Date(bm.k+'-01T00:00:00');
-    h+=line('Miglior mese',cap(d.toLocaleDateString('it-IT',{month:'long',year:'numeric'})),bm.r.w+'V-'+bm.r.l+'S');
-  }
+  h+=line('Striscia di vittorie',streakWhen(sw)||'Nessuna',sw.n||'–','var(--win)');
+  h+=line('Striscia di sconfitte',streakWhen(sl)||'Nessuna',sl.n||'–','var(--loss)');
+  if(bigW)h+=line('Vittoria più netta',esc(bigW.opponent||'Avversario')+' · '+dateLabel(bigW.date),scoreStr(bigW),'var(--win)');
+  if(bigL)h+=line('Sconfitta più netta',esc(bigL.opponent||'Avversario')+' · '+dateLabel(bigL.date),scoreStr(bigL),'var(--loss)');
+  if(bm)h+=line('Miglior mese',monthLabel(bm.k+'-01'),bm.r.w+'V-'+bm.r.l+'S');
   if(vo)h+=line('Avversario più battuto',esc(vo.k),vo.r.w+'V-'+vo.r.l+'S');
   h+=`</section>`;
   return h;
 }
 
-/* --- calendario dell'anno (funzione 3) --- */
+/* --- calendario dell'anno --- */
 function calendarCard(){
-  const years=[...new Set(S.matches.map(m=>(m.date||'').slice(0,4)).filter(Boolean))].sort().reverse();
+  const years=[...new Set(S.matches.map(m=>(m.date||'').slice(0,4)).filter(Boolean))].sort();
   if(!years.length)return '';
-  if(!years.includes(String(hmYear)))hmYear=+years[0];
+  if(!years.includes(String(hmYear)))hmYear=+years[years.length-1];
   const yr=record(S.matches.filter(m=>(m.date||'').slice(0,4)===String(hmYear)));
   return `<section class="card">
     <div class="clabel">Calendario ${hmYear} <em>· ${yr.tot} partite</em></div>
@@ -1033,16 +1115,16 @@ function calendarCard(){
     </div>`:''}
     ${heatmap(hmYear)}
     <div class="hmlegend">
-      <span><i style="background:var(--win)"></i>Vinto</span>
-      <span><i style="background:var(--loss)"></i>Perso</span>
-      <span><i style="background:var(--num)"></i>Entrambi</span>
+      <span><i style="background:var(--win)"></i>Vittorie</span>
+      <span><i style="background:var(--draw)"></i>Pareggi</span>
+      <span><i style="background:var(--loss)"></i>Sconfitte</span>
       <span><i style="background:var(--hm-empty)"></i>Riposo</span>
     </div>
   </section>`;
 }
 
 /* =========================================================
-   VISTA — TESTA A TESTA (funzione 1)
+   VISTA — TESTA A TESTA
    ========================================================= */
 function vOpp(name){
   const key=(name||'').trim().toLowerCase();
@@ -1050,33 +1132,35 @@ function vOpp(name){
   if(!ms.length)return `<div class="empty">${ball()}<h3>Nessuna partita</h3>
     <p>Non hai incontri registrati con questo avversario.</p></div>`;
 
-  const r=record(ms);
-  let sw=0,sl=0;ms.forEach(m=>{const[a,b]=setsWon(m);sw+=a;sl+=b;});
-  const g=gamesRec(ms);
+  const r=record(ms), g=gamesRec(ms), st=setsRec(ms);
+  const setPct=(st.a+st.b)?Math.round(st.a/(st.a+st.b)*100):0;
+  const gamePct=(g.g+g.o)?Math.round(g.g/(g.g+g.o)*100):0;
 
   let h=`<section class="card">
-    <div class="clabel">Bilancio</div>
-    ${donut(r.pct,r.w+'-'+r.l,r.tot+' incontri')}
-    <div class="legend">
-      <div class="lg"><i style="background:var(--win)"></i>Vittorie<b>${r.w}</b></div>
-      <div class="lg"><i style="background:var(--loss)"></i>Sconfitte<b>${r.l}</b></div>
-      <div class="lg"><i style="background:var(--txt-3)"></i>Set<b>${sw}-${sl}</b></div>
-      <div class="lg"><i style="background:var(--txt-3);opacity:.5"></i>Game<b>${g.g}-${g.o}</b></div>
+    <div class="clabel"><b>${r.tot}</b> incontri</div>
+    <div class="rings">
+      ${ring(r.pct,'Vittorie',`${r.w}V · ${r.l}S${r.d?' · '+r.d+'P':''}`)}
+      ${ring(setPct,'Set',`${st.a}-${st.b}`)}
+      ${ring(gamePct,'Game',`${g.g}-${g.o}`)}
     </div>
   </section>`;
 
-  /* ultimi 5 */
   const last5=ms.slice(0,5);
   h+=`<section class="card">
     <div class="clabel">Ultimi ${last5.length} incontri</div>
-    <div class="formrow" style="margin-top:0">${last5.slice().reverse().map(m=>{const o=outcome(m);return `<div class="fdot ${o==='W'?'w':'l'}">${o==='W'?'V':o==='L'?'X':'–'}</div>`}).join('')}</div>
+    <div class="formrow" style="margin-top:0">
+      ${last5.slice().reverse().map(m=>{const o=outcome(m);
+        return `<button class="fdot ${resClass(o)}" data-act="mres" data-id="${m.id}">${resLetter(o)}</button>`;}).join('')}
+    </div>
   </section>`;
 
-  /* per superficie */
   const sBars=SKEYS.map(k=>{
     const rr=record(ms.filter(m=>m.surface===k));
     if(!rr.tot)return '';
-    return bar(`<span class="sbadge s-${SURF[k].cls}"><i></i>${SURF[k].n}</span>`,`${rr.tot}P · ${rr.w}V · ${rr.l}S`,rr.pct,`var(${SURF[k].c})`);
+    const col=`var(${SURF[k].c})`;
+    return bar(
+      `<span class="sdot" style="background:${col}"></span><span style="color:${col}">${SURF[k].n} · ${rr.tot}</span>`,
+      `${rr.w}V · ${rr.l}S${rr.d?' · '+rr.d+'P':''} · ${rr.pct}%`,rr.pct,col);
   }).join('');
   if(sBars)h+=`<section class="card">
     <div class="clabel">Dove vi siete affrontati</div>
@@ -1093,26 +1177,26 @@ function vOpp(name){
    ========================================================= */
 function vHist(){
   let h=`<div class="fgroup"><input class="field" id="q" placeholder="Cerca avversario…" value="${esc(filt.q)}" data-act="q"></div>
-  <div class="chips" style="margin-bottom:10px">
-    <button class="chip ${filt.surf==='all'?'on':''}" data-act="fsurf" data-k="all">Tutte</button>
-    ${SKEYS.map(k=>`<button class="chip ${SURF[k].cls} ${filt.surf===k?'on':''}" data-act="fsurf" data-k="${k}">${SURF[k].n}</button>`).join('')}
+  <div class="frow">
+    <div class="flab">Superficie</div>
+    <div class="fchips">
+      ${SKEYS.map(k=>`<button class="chip ${SURF[k].cls} ${filt.surf.has(k)?'on':''}" data-act="fsurf" data-k="${k}">${SURF[k].n}</button>`).join('')}
+    </div>
   </div>
-  <div class="chips" style="margin-bottom:16px">
-    <button class="chip ${filt.res==='all'?'on':''}" data-act="fres" data-k="all">Tutti</button>
-    <button class="chip w ${filt.res==='W'?'on':''}" data-act="fres" data-k="W">Vittorie</button>
-    <button class="chip l ${filt.res==='L'?'on':''}" data-act="fres" data-k="L">Sconfitte</button>
+  <div class="frow" style="margin-bottom:16px">
+    <div class="flab">Risultato</div>
+    <div class="fchips">
+      <button class="chip w ${filt.res.has('W')?'on':''}" data-act="fres" data-k="W">Vittorie</button>
+      <button class="chip d ${filt.res.has('D')?'on':''}" data-act="fres" data-k="D">Pareggi</button>
+      <button class="chip l ${filt.res.has('L')?'on':''}" data-act="fres" data-k="L">Sconfitte</button>
+    </div>
   </div>`;
 
-  let list=sorted();
-  if(filt.surf!=='all')list=list.filter(m=>m.surface===filt.surf);
-  if(filt.res!=='all')list=list.filter(m=>outcome(m)===filt.res);
+  let list=sorted().filter(m=>filt.surf.has(m.surface));
+  list=list.filter(m=>{const o=outcome(m);return o?filt.res.has(o):false;});
   if(filt.q.trim())list=list.filter(m=>(m.opponent||'').toLowerCase().includes(filt.q.trim().toLowerCase()));
 
   if(!list.length)return h+`<div class="empty">${ball()}<h3>Nessuna partita</h3><p>Prova a cambiare i filtri.</p></div>`;
-
-  const r=record(list);
-  h+=`<div style="font-size:10px;color:var(--txt-3);font-weight:800;margin:0 3px 14px;letter-spacing:.1em;text-align:center;text-transform:uppercase">
-    ${list.length} partite · ${r.w}V-${r.l}S · ${r.pct}%</div>`;
 
   let curMonth='';
   list.forEach(m=>{
@@ -1153,11 +1237,12 @@ function vDetail(id){
     </div>
   </section>`;
 
-  h+=`<div class="resultbanner ${o==='W'?'w':o==='L'?'l':'n'}">${o==='W'?'✓ Vittoria':o==='L'?'✕ Sconfitta':'Risultato incompleto'}</div>`;
+  h+=`<div class="resultbanner ${resClass(o)||'n'}">${o==='W'?'✓ Vittoria':o==='L'?'✕ Sconfitta':o==='D'?'= Pareggio':'Risultato incompleto'}</div>`;
 
   h+=`<section class="card"><div class="clabel">Dettagli</div>`;
   if(m.court)h+=`<div class="statline"><div class="k">Campo</div><div class="v" style="font-size:14px">${esc(m.court)}</div></div>`;
   h+=`<div class="statline"><div class="k">Superficie</div><div class="v" style="font-size:14px">${s.n}</div></div>`;
+  if(m.duration)h+=`<div class="statline"><div class="k">Durata</div><div class="v" style="font-size:14px">${durLabel(m.duration)}</div></div>`;
   if(m.opponent)h+=`<div class="statline tap" data-act="opp" data-n="${esc(m.opponent)}">
     <div class="k">Testa a testa<small>Storico contro ${esc(m.opponent)}</small></div><div class="go">›</div></div>`;
   h+=`</section>`;
@@ -1178,8 +1263,7 @@ function vDetail(id){
 function newDraft(pre){
   const d=new Date();
   return Object.assign({
-    id:null,date:d.toISOString().slice(0,10),
-    time:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),
+    id:null,date:d.toISOString().slice(0,10),time:'19:00',duration:60,
     opponent:'',surface:'hard',court:'',sets:[{me:'',opp:'',tb:''},{me:'',opp:'',tb:''}],
     notes:''
   },pre||{});
@@ -1192,17 +1276,27 @@ function vForm(){
 
   const opps=uniqueField('opponent'), courts=uniqueField('court');
 
-  let h=`<div class="resultbanner ${o==='W'?'w':o==='L'?'l':'n'}">
-    ${o==='W'?`✓ Vittoria · ${a}-${b}`:o==='L'?`✕ Sconfitta · ${a}-${b}`:'Inserisci il punteggio'}</div>`;
+  let h=`<div class="resultbanner ${resClass(o)||'n'}">
+    ${o==='W'?`✓ Vittoria · ${a}-${b}`:o==='L'?`✕ Sconfitta · ${a}-${b}`:o==='D'?`= Pareggio · ${a}-${b}`:'Inserisci il punteggio'}</div>`;
 
   h+=`<div class="fgroup">
     <label class="fl">Avversario</label>
     <input class="field" data-f="opponent" list="opplist" value="${esc(d.opponent)}" placeholder="Nome avversario" autocomplete="off">
     <datalist id="opplist">${opps.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>
   </div>
+  <div class="fgroup">
+    <label class="fl">Data</label>
+    <input class="field" type="date" data-f="date" value="${esc(d.date)}">
+  </div>
   <div class="fgroup grid2">
-    <div><label class="fl">Data</label><input class="field" type="date" data-f="date" value="${esc(d.date)}"></div>
-    <div><label class="fl">Ora</label><input class="field" type="time" data-f="time" value="${esc(d.time)}"></div>
+    <div><label class="fl">Ora</label>
+      <div class="seg">${ORARI.map(t=>`<button data-act="time" data-k="${t}" class="${d.time===t?'on':''}">${t}</button>`).join('')}</div>
+    </div>
+    <div><label class="fl">Durata</label>
+      <select class="field" data-f="duration">
+        ${DURATE.map(v=>`<option value="${v}" ${+d.duration===v?'selected':''}>${durLabel(v)}</option>`).join('')}
+      </select>
+    </div>
   </div>
   <div class="fgroup">
     <label class="fl">Superficie</label>
@@ -1213,7 +1307,7 @@ function vForm(){
   </div>
   <div class="fgroup">
     <label class="fl">Campo</label>
-    <input class="field" data-f="court" list="courtlist" value="${esc(d.court||'')}" placeholder="es. Campo 3 · Centrale" autocomplete="off">
+    <input class="field" data-f="court" list="courtlist" value="${esc(d.court||'')}" placeholder="es. Laurera 15A40 o Momy Sport Village" autocomplete="off">
     <datalist id="courtlist">${courts.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>
   </div>`;
 
@@ -1253,19 +1347,14 @@ function vForm(){
    VISTA — PROFILO
    ========================================================= */
 function vProf(){
-  const p=S.profile,r=record(S.matches);
+  const p=S.profile;
   const ini=(p.name||'?').trim().charAt(0).toUpperCase()||'?';
-  const av=p.avatar?`<img class="avatar" src="${p.avatar}" alt="" style="width:82px;height:82px">`:`<div class="avatar" style="width:82px;height:82px;font-size:34px">${esc(ini)}</div>`;
+  const av=p.avatar?`<img class="avatar" src="${p.avatar}" alt="" style="width:96px;height:96px">`:`<div class="avatar" style="width:96px;height:96px;font-size:38px">${esc(ini)}</div>`;
   return `<section class="card">
     ${av}
-    <div style="height:12px"></div>
+    <div style="height:14px"></div>
     <button class="btn ghost sm" style="width:auto;padding:9px 18px;display:inline-block" data-act="pickav">Cambia foto</button>
     <input type="file" accept="image/*" id="avfile" class="hidden">
-    <div class="kpis">
-      <div class="kpi"><b>${r.tot}</b><span>Match</span></div>
-      <div class="kpi"><b>${r.pct}%</b><span>Win</span></div>
-      <div class="kpi"><b>${r.w}-${r.l}</b><span>Record</span></div>
-    </div>
   </section>
   <section class="card">
     <div class="clabel">Account</div>
@@ -1288,12 +1377,24 @@ function vProf(){
     <div class="clabel">Dati giocatore</div>
     <div class="fgroup"><label class="fl">Nome</label>
       <input class="field" data-p="name" value="${esc(p.name)}" placeholder="Il tuo nome"></div>
-    <div class="grid2" style="margin-bottom:0">
+    <div class="fgroup grid2">
       <div><label class="fl">Mano</label>
         <select class="field" data-p="hand"><option ${p.hand==='Destro'?'selected':''}>Destro</option><option ${p.hand==='Mancino'?'selected':''}>Mancino</option></select></div>
-      <div><label class="fl">Livello</label>
-        <input class="field" data-p="level" value="${esc(p.level)}" placeholder="es. 3.5 / NC"></div>
+      <div><label class="fl">Età</label>
+        <input class="field" type="number" inputmode="numeric" min="5" max="99" data-p="age" value="${esc(p.age)}" placeholder="es. 30"></div>
     </div>
+    <div class="fgroup grid2">
+      <div><label class="fl">Altezza (cm)</label>
+        <input class="field" type="number" inputmode="numeric" min="100" max="230" data-p="height" value="${esc(p.height)}" placeholder="es. 167"></div>
+      <div><label class="fl">Livello</label>
+        <input class="field" data-p="level" value="${esc(p.level)}" placeholder="es. 4.NC"></div>
+    </div>
+    <div class="fgroup"><label class="fl">Nazionalità</label>
+      <select class="field" data-p="nat">
+        ${NAZ.map(([c,n])=>`<option value="${c}" ${p.nat===c?'selected':''}>${flagEmoji(c)} ${n}</option>`).join('')}
+      </select></div>
+    <div style="margin-bottom:0"><label class="fl">Città di residenza</label>
+      <input class="field" data-p="city" value="${esc(p.city)}" placeholder="es. Rivalta di Torino"></div>
   </section>
   <section class="card">
     <div class="clabel">Aspetto</div>
@@ -1310,6 +1411,79 @@ function vProf(){
 }
 
 /* =========================================================
+   RITAGLIO FOTO PROFILO
+   ========================================================= */
+const crop={img:null,base:1,scale:1,x:0,y:0,V:250,drag:null};
+function openCropper(src){
+  const img=new Image();
+  img.onload=()=>{
+    crop.img=img;crop.scale=1;
+    crop.base=Math.max(crop.V/img.width,crop.V/img.height);
+    const w=img.width*crop.base,h=img.height*crop.base;
+    crop.x=(crop.V-w)/2;crop.y=(crop.V-h)/2;
+    document.getElementById('cropimg').src=src;
+    document.getElementById('cropzoom').value=100;
+    document.getElementById('cropper').classList.remove('hidden');
+    applyCrop();
+  };
+  img.onerror=()=>flash('Immagine non valida');
+  img.src=src;
+}
+function applyCrop(){
+  const el=document.getElementById('cropimg');
+  if(!el||!crop.img)return;
+  const eff=crop.base*crop.scale;
+  const w=crop.img.width*eff,h=crop.img.height*eff,V=crop.V;
+  crop.x=Math.min(0,Math.max(V-w,crop.x));
+  crop.y=Math.min(0,Math.max(V-h,crop.y));
+  el.style.width=w+'px';el.style.height=h+'px';
+  el.style.transform=`translate(${crop.x}px,${crop.y}px)`;
+}
+function closeCropper(){
+  document.getElementById('cropper').classList.add('hidden');
+  crop.img=null;crop.drag=null;
+  const f=document.getElementById('avfile');if(f)f.value='';
+}
+function saveCrop(){
+  if(!crop.img)return;
+  const eff=crop.base*crop.scale,V=crop.V,SZ=320;
+  const c=document.createElement('canvas');c.width=c.height=SZ;
+  const ctx=c.getContext('2d');
+  ctx.drawImage(crop.img,-crop.x/eff,-crop.y/eff,V/eff,V/eff,0,0,SZ,SZ);
+  S.profile.avatar=c.toDataURL('image/jpeg',.86);
+  save();closeCropper();render();flash('Foto aggiornata');
+}
+(function initCropper(){
+  const vw=document.getElementById('cropview');
+  const zoom=document.getElementById('cropzoom');
+  vw.addEventListener('pointerdown',e=>{
+    if(!crop.img)return;
+    crop.drag={px:e.clientX,py:e.clientY};
+    vw.setPointerCapture(e.pointerId);
+  });
+  vw.addEventListener('pointermove',e=>{
+    if(!crop.drag||!crop.img)return;
+    crop.x+=e.clientX-crop.drag.px;
+    crop.y+=e.clientY-crop.drag.py;
+    crop.drag.px=e.clientX;crop.drag.py=e.clientY;
+    applyCrop();
+  });
+  const end=e=>{crop.drag=null;try{vw.releasePointerCapture(e.pointerId)}catch(_){}};
+  vw.addEventListener('pointerup',end);
+  vw.addEventListener('pointercancel',end);
+  zoom.addEventListener('input',()=>{
+    if(!crop.img)return;
+    const old=crop.scale;
+    crop.scale=+zoom.value/100;
+    // mantiene il centro dell'inquadratura mentre si zooma
+    const k=crop.scale/old, V=crop.V;
+    crop.x=V/2-(V/2-crop.x)*k;
+    crop.y=V/2-(V/2-crop.y)*k;
+    applyCrop();
+  });
+})();
+
+/* =========================================================
    EVENTI
    ========================================================= */
 document.addEventListener('click',e=>{
@@ -1322,7 +1496,14 @@ document.addEventListener('click',e=>{
     case 'new': draft=newDraft();go('form');break;
     case 'detail': go('detail',t.dataset.id);break;
     case 'opp': go('opp',t.dataset.n);break;
+    case 'oppname': flash(t.dataset.n);break;
+    case 'mres':{
+      const m=S.matches.find(x=>x.id===t.dataset.id);
+      if(m)flash((m.opponent||'Avversario')+' · '+scoreStr(m));
+      break;
+    }
     case 'hmy': hmYear=+t.dataset.k;render();break;
+    case 'time': draft.time=t.dataset.k;haptic();render();break;
     case 'edit':{
       const m=S.matches.find(x=>x.id===t.dataset.id);
       draft=newDraft(JSON.parse(JSON.stringify(m)));
@@ -1334,9 +1515,16 @@ document.addEventListener('click',e=>{
         S.matches=S.matches.filter(x=>x.id!==t.dataset.id);save();flash('Partita eliminata');go('hist');}
       break;
     }
-    case 'tf': filt.tf=t.dataset.k;render();break;
-    case 'fsurf': filt.surf=t.dataset.k;render();break;
-    case 'fres': filt.res=t.dataset.k;render();break;
+    case 'fsurf':{
+      const k=t.dataset.k;
+      filt.surf.has(k)?filt.surf.delete(k):filt.surf.add(k);
+      render();break;
+    }
+    case 'fres':{
+      const k=t.dataset.k;
+      filt.res.has(k)?filt.res.delete(k):filt.res.add(k);
+      render();break;
+    }
     case 'surf': draft.surface=t.dataset.k;haptic();render();break;
     case 'stp':{
       const i=+t.dataset.i,s=t.dataset.s,d=+t.dataset.d;
@@ -1349,6 +1537,8 @@ document.addEventListener('click',e=>{
     case 'savematch': saveMatch();break;
     case 'demo': loadDemo();break;
     case 'pickav': document.getElementById('avfile').click();break;
+    case 'cropcancel': closeCropper();break;
+    case 'cropsave': saveCrop();break;
     case 'login': cloudLogin();break;
     case 'logout':
       if(confirm('Disconnettere l\'account Google? I dati restano su questo dispositivo.'))cloudLogout();
@@ -1377,17 +1567,19 @@ document.addEventListener('input',e=>{
   if(el.dataset.act==='q'){filt.q=el.value;renderHistList();return;}
 });
 document.addEventListener('change',e=>{
-  if(e.target.dataset.p){S.profile[e.target.dataset.p]=e.target.value;save();}
+  const el=e.target;
+  if(el.dataset.f&&draft)draft[el.dataset.f]=el.value;
+  if(el.dataset.p){S.profile[el.dataset.p]=el.value;save();}
   // uscendo da un campo punteggio ridisegno: fa comparire/sparire il tie-break
-  if(e.target.dataset.sf&&e.target.dataset.sf!=='tb'&&draft&&view.n==='form')render();
+  if(el.dataset.sf&&el.dataset.sf!=='tb'&&draft&&view.n==='form')render();
 });
 
 function updateBanner(){
   const clean=draft.sets.filter(s=>s.me!==''&&s.opp!=='').map(s=>({me:+s.me,opp:+s.opp}));
   const o=clean.length?outcome({sets:clean}):null,[a,b]=setsWon({sets:clean});
   const el=document.querySelector('.resultbanner');if(!el)return;
-  el.className='resultbanner '+(o==='W'?'w':o==='L'?'l':'n');
-  el.textContent=o==='W'?`✓ Vittoria · ${a}-${b}`:o==='L'?`✕ Sconfitta · ${a}-${b}`:'Inserisci il punteggio';
+  el.className='resultbanner '+(resClass(o)||'n');
+  el.textContent=o==='W'?`✓ Vittoria · ${a}-${b}`:o==='L'?`✕ Sconfitta · ${a}-${b}`:o==='D'?`= Pareggio · ${a}-${b}`:'Inserisci il punteggio';
 }
 function renderHistList(){
   const el=document.getElementById('view');
@@ -1404,28 +1596,22 @@ function saveMatch(){
   if(!sets.length){flash('Inserisci almeno un set');return;}
   if(!d.opponent.trim())d.opponent='Avversario';
   const m={
-    id:d.id||uid(),date:d.date,time:d.time,opponent:d.opponent.trim(),surface:d.surface,
-    court:(d.court||'').trim(),sets,notes:(d.notes||'').trim()
+    id:d.id||uid(),date:d.date,time:d.time,duration:+d.duration||60,
+    opponent:d.opponent.trim(),surface:d.surface,court:(d.court||'').trim(),
+    sets,notes:(d.notes||'').trim()
   };
   if(d.id){S.matches=S.matches.map(x=>x.id===d.id?m:x);}else{S.matches.push(m);}
   save();draft=null;
   const o=outcome(m);
-  flash(o==='W'?'✓ Vittoria registrata':'Partita registrata');
+  flash(o==='W'?'✓ Vittoria registrata':o==='D'?'= Pareggio registrato':'Partita registrata');
   go('detail',m.id);
 }
-/* avatar */
+/* foto profilo → apre il ritaglio */
 document.addEventListener('change',e=>{
   if(e.target.id==='avfile'&&e.target.files[0]){
-    const f=e.target.files[0],r=new FileReader();
-    r.onload=()=>{
-      const img=new Image();
-      img.onload=()=>{
-        const c=document.createElement('canvas'),sz=256;c.width=c.height=sz;
-        const x=c.getContext('2d'),m=Math.min(img.width,img.height);
-        x.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,sz,sz);
-        S.profile.avatar=c.toDataURL('image/jpeg',.82);save();render();flash('Foto aggiornata');
-      };img.src=r.result;
-    };r.readAsDataURL(f);
+    const r=new FileReader();
+    r.onload=()=>openCropper(r.result);
+    r.readAsDataURL(e.target.files[0]);
   }
 });
 
@@ -1433,25 +1619,35 @@ document.addEventListener('change',e=>{
 function loadDemo(){
   const names=['M. Rossi','L. Bianchi','A. Conti','D. Ferrari','S. Greco','P. Marino','G. Costa'];
   const surf=['hard','clay','clay','hard','clay','hard','clay'];
-  const courts=['Campo 1','Campo 3','Centrale','Campo 2'];
+  const courts=['Laurera 15A40','Momy Sport Village','Laurera 15A40','Centrale'];
   const out=[];const today=new Date();
   for(let i=0;i<24;i++){
     const d=new Date(today);d.setDate(d.getDate()-i*9-Math.floor(Math.random()*4));
-    const win=Math.random()<.58;
+    const roll=Math.random();
     const sets=[];
-    const n=Math.random()<.35?3:2;
-    for(let k=0;k<n;k++){
-      const meWin=(k<2)?(k===0?win:(n===3?!win:win)):win;
-      const a=meWin?6:Math.floor(Math.random()*5);
-      const b=meWin?Math.floor(Math.random()*5):6;
-      const tie=Math.random()<.18;
-      sets.push(tie?{me:meWin?7:6,opp:meWin?6:7,tb:meWin?'7-5':'5-7'}:{me:a,opp:b,tb:''});
+    if(roll<.08){                              // pareggio
+      const v=6+Math.floor(Math.random()*3);
+      sets.push({me:v,opp:v,tb:''});
+    }else{
+      const win=roll<.58;
+      const n=Math.random()<.35?3:2;
+      for(let k=0;k<n;k++){
+        const meWin=(k<2)?(k===0?win:(n===3?!win:win)):win;
+        const a=meWin?6:Math.floor(Math.random()*5);
+        const b=meWin?Math.floor(Math.random()*5):6;
+        const tie=Math.random()<.18;
+        sets.push(tie?{me:meWin?7:6,opp:meWin?6:7,tb:meWin?'7-5':'5-7'}:{me:a,opp:b,tb:''});
+      }
     }
-    out.push({id:uid(),date:d.toISOString().slice(0,10),time:['09:30','18:00','20:30','15:00'][i%4],
+    out.push({id:uid(),date:d.toISOString().slice(0,10),time:ORARI[i%2],duration:DURATE[i%DURATE.length],
       opponent:names[i%names.length],surface:surf[i%surf.length],court:courts[i%courts.length],sets,
       notes:i%4===0?'Buona percentuale di prime, da migliorare la risposta sulla seconda.':''});
   }
-  S.matches=out;if(!S.profile.name)S.profile.name='Andrea';save();go('home');flash('Dati di esempio caricati');
+  S.matches=out;
+  if(!S.profile.name){
+    S.profile=Object.assign(S.profile,{name:'Andrea',hand:'Mancino',age:'30',height:'167',city:'Rivalta di Torino',level:'4.NC',nat:'IT'});
+  }
+  save();go('home');flash('Dati di esempio caricati');
 }
 
 /* navigazione / tasto indietro */

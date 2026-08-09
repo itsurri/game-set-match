@@ -33,12 +33,14 @@ Display **Bebas Neue**, testo **Work Sans**. Tema chiaro e scuro entrambi suppor
 
 ## Funzioni
 
-- **Registrazione partita**: data/ora, avversario, superficie (terra/cemento), **campo**, punteggio per set con tie-break, esito calcolato in tempo reale, note tattiche libere.
+Gli esiti hanno tre colori in tutta l'app: **verde** vittoria, **giallo** pareggio, **rosso** sconfitta.
+
+- **Registrazione partita**: data, ora (19:00 / 19:30), durata da 1 a 4 ore, avversario, superficie (terra/cemento), **campo**, punteggio per set con tie-break, esito calcolato in tempo reale, note tattiche libere.
 - **Suggerimenti**: avversari e campi già usati vengono proposti mentre scrivi, così non nascono doppioni.
-- **Dashboard**: profilo, win/loss, striscia, forma delle ultime 10 con grafico cumulativo.
-- **Statistiche**: filtri Mese / Anno / All-Time, anello win rate, barre per superficie, andamento.
+- **Home**: profilo con bandiera, dati anagrafici e livello; forma delle ultime 10 a colonne (tocca l'iniziale per il nome, l'esito per il risultato); superfici in una barra unica che sfuma verso il colore su cui hai giocato di più.
+- **Statistiche** (all-time): tre anelli — vittorie, set, game — rendimento per superficie, andamento delle ultime 10 con esiti toccabili.
 - **Testa a testa**: scheda per ogni avversario con bilancio, ultimi incontri, rendimento per superficie e lista completa.
-- **Record personali**: striscia più lunga, vittoria più netta, miglior mese, avversario più battuto.
-- **Calendario dell'anno**: una griglia giorno per giorno — verde vinto, rosso perso, spento riposo.
-- **Confronto periodi**: questo mese contro il precedente, quest'anno contro l'anno scorso.
-- **Storico**: raggruppato per mese, filtri per superficie ed esito, ricerca avversario, scheda dettaglio per ogni match.
+- **Record personali**: strisce di vittorie e sconfitte con il periodo, vittoria e sconfitta più nette col punteggio, miglior mese, avversario più battuto.
+- **Calendario dell'anno**: una griglia giorno per giorno — verde vittoria, giallo pareggio, rosso sconfitta, spento riposo.
+- **Storico**: raggruppato per mese, filtri multipli per superficie ed esito, ricerca avversario, scheda dettaglio per ogni match.
+- **Profilo**: nome, mano, età, altezza, livello, nazionalità e città; foto ritagliabile con zoom e trascinamento.
