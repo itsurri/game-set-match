@@ -235,7 +235,8 @@ nav.tabs{
 }
 .clabel.big b{vertical-align:0}
 .clabel.big em{font-size:19px;opacity:.6}
-.sec{margin:24px 0 11px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+/* titolo e link sulla stessa riga, centrati, per compattare */
+.sec{margin:24px 0 11px;display:flex;align-items:baseline;justify-content:center;gap:11px;text-align:center;flex-wrap:wrap}
 .sec h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:20px;letter-spacing:.05em;text-transform:uppercase}
 .sec .hint{font-size:10px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.12em;background:none}
 
@@ -1408,7 +1409,7 @@ function vForm(){
 
   <div class="fgroup">
     <label class="fl">Avversario</label>
-    <input class="field" data-f="opponent" list="opplist" value="${esc(d.opponent)}" placeholder="Nome avversario" autocomplete="off">
+    <input class="field" data-f="opponent" list="opplist" value="${esc(d.opponent)}" placeholder="Inserisci solo il cognome" autocomplete="off">
     <datalist id="opplist">${opps.map(v=>`<option value="${esc(v)}"></option>`).join('')}</datalist>
   </div>
   <div class="fgroup">
