@@ -7,7 +7,7 @@ Ottimizzata per iPhone 15 Pro Max (6.7", safe area + Dynamic Island).
 
 | File | Ruolo |
 |---|---|
-| `index.html` | tutta l'app: UI, logica, grafici SVG (nessuna dipendenza esterna) |
+| `index.html` | tutta l'app: UI, logica, grafici SVG, integrazione Firebase (login Google + sync) |
 | `manifest.webmanifest` | installazione standalone sulla Home |
 | `icon.svg` / `icon.png` | icona app |
 
@@ -21,8 +21,9 @@ Aprendola da file locale funziona comunque, ma senza modalità standalone.
 
 ## Dati
 
-Tutto è salvato in `localStorage` **solo sul dispositivo**: niente account, niente server.
-Da *Profilo* puoi esportare/importare un backup JSON e caricare dati di esempio.
+Di base tutto è salvato in `localStorage` **solo sul dispositivo**: niente account, niente server.
+Da *Profilo* puoi anche **accedere con Google**: le partite vengono sincronizzate su Firestore e ritrovate su ogni dispositivo dove fai login con lo stesso account.
+Da *Profilo* puoi inoltre esportare/importare un backup JSON e caricare dati di esempio.
 
 ## Funzioni
 

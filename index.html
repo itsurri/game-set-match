@@ -388,6 +388,34 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
   <div class="wrap" id="tabs"></div>
 </nav>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+  onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+  getDatabase, ref, get, set
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA79jDXpORteK2XI72-nx1E7LB18ATXCMY",
+  authDomain: "game-set-match-b838f.firebaseapp.com",
+  projectId: "game-set-match-b838f",
+  storageBucket: "game-set-match-b838f.firebasestorage.app",
+  messagingSenderId: "65860655437",
+  appId: "1:65860655437:web:0f388ace0f6cd024ca7f04",
+  databaseURL: "https://game-set-match-b838f-default-rtdb.europe-west1.firebasedatabase.app/"
+};
+const fbApp = initializeApp(firebaseConfig);
+window.firebase = {
+  auth: getAuth(fbApp), db: getDatabase(fbApp),
+  GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+  onAuthStateChanged, signOut, ref, get, set
+};
+window.firebase.getRedirectResult(window.firebase.auth).catch(()=>{});
+window.dispatchEvent(new Event('gsm-fb-ready'));
+</script>
 <script>
 /* =========================================================
    STATE
@@ -410,8 +438,62 @@ function load(){
   try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&r.matches)return Object.assign(blank(),r);}catch(e){}
   return blank();
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(S));}
+function save(){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+/* =========================================================
+   CLOUD SYNC (Firebase Auth + Realtime Database)
+   ========================================================= */
+let cloudUser=null, cloudTimer=null, cloudBusy=false;
+function initCloud(){
+  const fb=window.firebase;
+  fb.onAuthStateChanged(fb.auth, user=>{
+    cloudUser=user;
+    if(user) cloudPull();
+    render();
+  });
+}
+function cloudLogin(){
+  const fb=window.firebase;
+  if(!fb){flash('Servizio non disponibile, riprova tra poco');return;}
+  fb.signInWithRedirect(fb.auth, new fb.GoogleAuthProvider());
+}
+function cloudLogout(){
+  const fb=window.firebase;
+  fb.signOut(fb.auth);
+  cloudUser=null;render();
+}
+function cloudPush(){
+  if(!cloudUser||!window.firebase)return;
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>{
+    const fb=window.firebase;
+    fb.set(fb.ref(fb.db,'users/'+cloudUser.uid),
+      {profile:S.profile, matches:S.matches, theme:S.theme, updatedAt:Date.now()}).catch(()=>{});
+  },800);
+}
+async function cloudPull(){
+  if(!cloudUser||cloudBusy)return;
+  cloudBusy=true;
+  try{
+    const fb=window.firebase;
+    const snap=await fb.get(fb.ref(fb.db,'users/'+cloudUser.uid));
+    if(snap.exists())mergeFromCloud(snap.val());
+    else cloudPush();
+  }catch(e){}
+  cloudBusy=false;
+}
+function mergeFromCloud(remote){
+  const map={};
+  (S.matches||[]).forEach(m=>map[m.id]=m);
+  (remote.matches||[]).forEach(m=>map[m.id]=m);
+  S.matches=Object.values(map);
+  if(remote.profile&&remote.profile.name)S.profile=Object.assign({},S.profile,remote.profile);
+  if(remote.theme)S.theme=remote.theme;
+  localStorage.setItem(KEY,JSON.stringify(S));
+  applyTheme();render();
+}
+window.addEventListener('gsm-fb-ready', initCloud);
 function haptic(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
 
 /* theme */
@@ -1014,6 +1096,23 @@ function vProf(){
       <div class="kpi"><b class="num">${r.w}-${r.l}</b><span>Record</span></div>
     </div>
   </section>
+  <div class="sec"><h2>Account</h2></div>
+  <section class="card">
+    ${cloudUser?`
+    <div style="display:flex;align-items:center;gap:10px">
+      ${cloudUser.photoURL?`<img src="${cloudUser.photoURL}" alt="" style="width:36px;height:36px;border-radius:50%">`:''}
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(cloudUser.displayName||cloudUser.email)}</div>
+        <div style="color:var(--txt-3);font-size:11.5px">Sincronizzato con Google</div>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+    <button class="btn ghost sm" data-act="logout">Disconnetti account</button>`
+    :`
+    <button class="btn ghost sm" data-act="login">Accedi con Google</button>
+    <div style="height:9px"></div>
+    <div style="color:var(--txt-3);font-size:11.5px">Accedi per sincronizzare le partite tra i tuoi dispositivi</div>`}
+  </section>
   <div class="sec"><h2>Dati giocatore</h2></div>
   <section class="card">
     <div class="fgroup"><label class="fl">Nome</label>
@@ -1041,7 +1140,7 @@ function vProf(){
     <button class="btn danger sm" data-act="wipe">Cancella tutti i dati</button>
   </section>
   <div style="text-align:center;color:var(--txt-3);font-size:11.5px;margin-top:22px;font-weight:600">
-    Game, Set & Match! · dati salvati solo su questo dispositivo</div>`;
+    Game, Set & Match! · ${cloudUser?'dati sincronizzati con Google':'dati salvati solo su questo dispositivo'}</div>`;
 }
 
 /* =========================================================
@@ -1102,6 +1201,10 @@ document.addEventListener('click',e=>{
       break;
     case 'demo': loadDemo();break;
     case 'pickav': document.getElementById('avfile').click();break;
+    case 'login': cloudLogin();break;
+    case 'logout':
+      if(confirm('Disconnettere l\'account Google? I dati restano su questo dispositivo.'))cloudLogout();
+      break;
     case 'export': doExport();break;
     case 'import': document.getElementById('impfile').click();break;
     case 'wipe':
