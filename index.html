@@ -127,10 +127,14 @@ main{
 /* ---------- header (stencil, centrato) ---------- */
 .topbar{
   position:sticky;top:0;z-index:40;
-  padding:calc(var(--safe-t) + 30px) 62px 14px;
+  padding:calc(var(--safe-t) + 30px) 18px 14px;
   max-width:520px;margin:0 auto;width:100%;
-  display:flex;align-items:center;justify-content:center;
   background:linear-gradient(to bottom,var(--bg) 70%,transparent);
+}
+/* riga del titolo: il tasto indietro si centra su questa, non sull'intera barra */
+.tbrow{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  min-height:38px;padding:0 44px;
 }
 .stencil{position:relative;display:inline-block;max-width:100%}
 .stencil h1{
@@ -147,7 +151,7 @@ main{
 .stencil.sm h1,.stencil.sm .ghost{font-size:23px}
 .stencil.sm .ghost{top:-9px}
 .iconbtn{
-  position:absolute;left:18px;top:50%;transform:translateY(-50%);
+  position:absolute;left:0;top:50%;transform:translateY(-50%);
   width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
   background:var(--field);border:1px solid var(--field-brd);
 }
@@ -223,6 +227,13 @@ nav.tabs{
 }
 .clabel em{font-style:normal;color:var(--txt-2);opacity:.75}
 .clabel b{font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.04em;color:var(--num);text-shadow:var(--glow-num);vertical-align:-1px}
+/* titolo grande: tutta la riga alla stessa dimensione dei numeri */
+.clabel.big{
+  font-family:var(--f-display);font-weight:400;font-size:19px;line-height:1.15;
+  letter-spacing:.05em;color:var(--txt-2);
+}
+.clabel.big b{vertical-align:0}
+.clabel.big em{font-size:19px;opacity:.6}
 .sec{margin:24px 0 11px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
 .sec h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:20px;letter-spacing:.05em;text-transform:uppercase}
 .sec .hint{font-size:10px;color:var(--txt-3);font-weight:800;text-transform:uppercase;letter-spacing:.12em;background:none}
@@ -822,16 +833,18 @@ function gamesChart(list){
     let g=0,o=0;(m.sets||[]).forEach(s=>{g+=+s.me||0;o+=+s.opp||0});
     mine.push(g);theirs.push(o);
   });
-  const max=Math.max(1,...mine,...theirs);
-  const W=280,H=118,P=8;
-  const X=i=>P+i/(seq.length-1)*(W-P*2);
-  const Y=v=>H-P-(v/max)*(H-P*2);
+  const peak=Math.max(1,...mine,...theirs);
+  const max=Math.ceil(peak/4)*4;              // arrotonda per avere tacche intere
+  const W=300,H=124,L=22,R=4,T=8,B=10;
+  const X=i=>L+i/(seq.length-1)*(W-L-R);
+  const Y=v=>H-B-(v/max)*(H-B-T);
   const path=a=>a.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
   const dots=(a,col)=>a.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.4" fill="${col}"/>`).join('');
   let grid='';
-  for(let k=1;k<=3;k++){
-    const y=P+(H-P*2)*k/4;
-    grid+=`<line x1="0" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}" stroke="var(--card-brd)" stroke-width="1" stroke-dasharray="3 5"/>`;
+  for(let k=0;k<=4;k++){
+    const v=Math.round(max*k/4), y=Y(v);
+    grid+=`<line x1="${L}" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}" stroke="var(--card-brd)" stroke-width="1"${k?' stroke-dasharray="3 5"':''}/>`;
+    grid+=`<text x="${L-5}" y="${(y+3).toFixed(1)}" text-anchor="end" fill="var(--txt-3)" font-size="8" font-weight="700">${v}</text>`;
   }
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;overflow:visible">
     ${grid}
@@ -916,7 +929,7 @@ function render(){
     case 'detail': top=barBack('Dettaglio match');     h=vDetail(view.p); break;
     case 'opp':    top=barBack(view.p||'Avversario');  h=vOpp(view.p); break;
   }
-  document.getElementById('topbar').innerHTML=top;
+  document.getElementById('topbar').innerHTML='<div class="tbrow">'+top+'</div>';
   v.innerHTML='<div class="fade">'+h+'</div>';
   renderTabs();
 }
@@ -1000,7 +1013,7 @@ function vHome(){
   const last=all.slice(0,20), lr=record(last);
   h+=`<section class="card">
     <div class="reveal hidden" id="reveal"></div>
-    <div class="clabel">Forma recente · <b>${recStr(lr)}</b> · <b>${lr.pct}%</b> di vittorie</div>
+    <div class="clabel big">Forma recente · <b>${recStr(lr)}</b> · <b>${lr.pct}%</b> di vittorie</div>
     <div class="fgrid">
       ${last.slice().reverse().map(m=>{
         const o=outcome(m);
@@ -1077,7 +1090,7 @@ function vStats(){
   const gamePct=(g.g+g.o)?Math.round(g.g/(g.g+g.o)*100):0;
 
   let h=`<section class="card">
-    <div class="clabel"><b>${r.tot}</b> partite giocate</div>
+    <div class="clabel big"><b>${r.tot}</b> partite giocate</div>
     <div class="rings">
       ${ring(r.pct,'Vittorie',`${r.w}V · ${r.d}P · ${r.l}S`)}
       ${ring(setPct,'Set',`${st.a}-${st.b}`)}
@@ -1205,7 +1218,7 @@ function vOpp(name){
   const gamePct=(g.g+g.o)?Math.round(g.g/(g.g+g.o)*100):0;
 
   let h=`<section class="card">
-    <div class="clabel"><b>${r.tot}</b> incontri</div>
+    <div class="clabel big"><b>${r.tot}</b> incontri</div>
     <div class="rings">
       ${ring(r.pct,'Vittorie',`${r.w}V · ${r.d}P · ${r.l}S`)}
       ${ring(setPct,'Set',`${st.a}-${st.b}`)}
@@ -1584,13 +1597,17 @@ document.addEventListener('click',e=>{
       if(!m)break;
       const o=outcome(m);
       const box=document.getElementById('reveal');
-      const txt=`<span class="rtit">${resLetter(o)==='V'?'✓':resLetter(o)==='X'?'✕':'='} ${resName(o)}</span>${esc(m.opponent||'Avversario')} · ${scoreStr(m)} · ${relDay(m.date)}`;
-      if(box){
-        box.className='reveal '+resClass(o);
-        box.innerHTML=txt;
-      }else{
+      if(!box){
         flash(resName(o)+' · '+(m.opponent||'Avversario')+' · '+scoreStr(m));
+        haptic();break;
       }
+      // ritoccando la stessa partita il riquadro si richiude
+      if(box.dataset.id===m.id&&!box.classList.contains('hidden')){
+        box.classList.add('hidden');box.dataset.id='';haptic();break;
+      }
+      box.className='reveal '+resClass(o);
+      box.dataset.id=m.id;
+      box.innerHTML=`<span class="rtit">${o==='W'?'✓':o==='L'?'✕':'='} ${resName(o)}</span>${esc(m.opponent||'Avversario')} · ${scoreStr(m)} · ${relDay(m.date)}`;
       haptic();break;
     }
     case 'hmy': hmYear=+t.dataset.k;render();break;
