@@ -478,22 +478,37 @@ textarea.field{min-height:96px;resize:none;line-height:1.45}
 .resultbanner.d{background:rgba(245,201,58,.12);color:var(--draw);border-color:rgba(245,201,58,.32)}
 .resultbanner.n{background:var(--field);color:var(--txt-3);border-color:var(--field-brd)}
 
-/* dettaglio match */
-.mhead{
-  border-radius:var(--radius);padding:20px 18px;color:#fff;position:relative;overflow:hidden;margin-bottom:13px;
+/* dettaglio match — griglia stile tabellone televisivo */
+.mhead{border-radius:var(--radius);overflow:hidden;margin-bottom:13px;color:#fff}
+.mh-inner{background:rgba(6,10,6,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.mh-meta{
+  padding:13px 16px 11px;font-size:9.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(255,255,255,.8);border-bottom:1px solid rgba(255,255,255,.14);
 }
-.mhead::after{content:"";position:absolute;inset:0;background:radial-gradient(90% 120% at 90% -20%,rgba(255,255,255,.22),transparent 55%)}
-.mhead .rel{position:relative;z-index:1}
-.mhead .dt{font-size:10px;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.1em}
-.mhead .vs{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
-.mhead .pl{font-size:15px;font-weight:800;letter-spacing:.02em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase}
-.mhead .pl.r{text-align:right}
-.mhead .big{font-family:var(--f-display);font-weight:400;font-size:34px;letter-spacing:.02em;flex:none}
-.setgrid{display:flex;gap:9px;margin-top:16px;position:relative;z-index:1}
-.setbox{flex:1;background:rgba(255,255,255,.16);border-radius:12px;padding:9px 4px;text-align:center}
-.setbox .n{font-size:9px;opacity:.75;font-weight:800;letter-spacing:.08em}
-.setbox .v{font-size:16px;font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums}
-.setbox .v sup{font-size:9px;opacity:.8}
+.mh-meta .l1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mh-meta .l2{margin-top:4px;color:rgba(255,255,255,.56)}
+.mh-meta i{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.4);display:block;flex:none}
+.mh-grid{padding:4px 16px 14px}
+.mh-hd{display:flex;gap:7px;justify-content:flex-end;padding:10px 0 6px}
+.mh-hd span{width:34px;text-align:center;font-size:8.5px;font-weight:800;letter-spacing:.05em;color:rgba(255,255,255,.5)}
+.mh-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid rgba(255,255,255,.13)}
+.mh-nm{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+.mh-nm .bar{width:4px;height:36px;border-radius:2px;background:rgba(255,255,255,.26);flex:none}
+.mh-row.win .mh-nm .bar{background:var(--optic)}
+.mh-nm .t{min-width:0}
+.mh-nm .f{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.58);line-height:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mh-nm .l{font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.05;letter-spacing:.025em;
+  color:#fff;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mh-row.lose .mh-nm .l{color:rgba(255,255,255,.66)}
+.mh-sc{display:flex;gap:7px;flex:none}
+/* chi vince il set ha il numero pieno, a prescindere da come finisce la partita */
+.mh-sc b{
+  width:34px;text-align:center;font-size:19px;font-weight:600;color:rgba(255,255,255,.45);
+  font-variant-numeric:tabular-nums;position:relative;
+}
+.mh-sc b.w{color:#fff;font-weight:900}
+.mh-sc b sup{font-size:9px;font-weight:700;opacity:.75;margin-left:1px}
 
 .statline{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--card-brd);text-align:left}
 .statline:last-child{border:0;padding-bottom:0}
@@ -741,13 +756,6 @@ function dispSets(m){
   });
 }
 function scoreStr(m){return dispSets(m).map(s=>s.a+'-'+s.b).join(' ')||'–';}
-/* toglie le iniziali puntate: "Marusich M." → "Marusich", "M. Rossi" → "Rossi" */
-function surnameOf(full){
-  const t=String(full||'').trim();
-  if(!t)return '';
-  const parts=t.split(/\s+/).filter(p=>!/^[A-Za-zÀ-ÿ]\.?$/.test(p));
-  return parts.length?parts.join(' '):t;
-}
 function myName(){
   const p=S.profile;
   return [p.name,p.surname].filter(Boolean).join(' ').trim();
@@ -1348,34 +1356,53 @@ function vDetail(id){
   const m=S.matches.find(x=>x.id===id);
   if(!m)return `<div class="empty"><h3>Match non trovato</h3></div>`;
   const s=SURF[m.surface]||SURF.hard,o=outcome(m),[a,b]=setsWon(m);
-  // il vincitore va sempre a sinistra
+  // il vincitore del match sta sempre nella riga in alto
   const flip=o==='L';
-  const leftSets=flip?b:a, rightSets=flip?a:b;
-  const meLabel=S.profile.surname||surnameOf(myName())||'Io';
-  const oppLabel=surnameOf(m.opponent)||'Avversario';
+  const ds=dispSets(m);                    // .a = riga alta, .b = riga bassa
+  const p=oppParts(m), me=S.profile;
+  const meRow ={f:me.name||'',  l:me.surname||me.name||'Io'};
+  const oppRow={f:p.first||'',  l:p.last||'Avversario'};
+  const rowTop   = flip?oppRow:meRow;
+  const rowBottom= flip?meRow:oppRow;
+  const setsTop  = flip?b:a, setsBottom = flip?a:b;
+
+  let n=0;
+  const heads=ds.map(x=>x.tbk?'TB':'SET '+(++n));
+  // i punti del tie-break si mostrano in apice su chi ha perso quel set
+  const tbLow=x=>{
+    if(!x.tb)return null;
+    const v=String(x.tb).split('-').map(t=>parseInt(t,10)).filter(t=>!isNaN(t));
+    return v.length===2?Math.min(...v):null;
+  };
+  const cells=side=>ds.map(x=>{
+    const mine=side==='a'?x.a:x.b, other=side==='a'?x.b:x.a;
+    const won=mine>other, lo=tbLow(x);
+    return `<b class="${won?'w':''}">${mine}${(!won&&lo!==null)?`<sup>${lo}</sup>`:''}</b>`;
+  }).join('');
+  const nameBlock=r=>`<div class="mh-nm"><div class="bar"></div><div class="t">
+    ${r.f?`<div class="f">${esc(r.f)}</div>`:''}<div class="l">${esc(r.l)}</div></div></div>`;
 
   let h=`<section class="mhead s-${s.cls}">
-    <div class="rel">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <div class="dt">${dateLabel(m.date,m.time)}</div>
-        <span class="sbadge" style="background:rgba(0,0,0,.24)"><i></i>${s.n}</span>
+    <div class="mh-inner">
+      <div class="mh-meta">
+        <div class="l1"><span>${dateFull(m.date)}</span>${m.time?`<i></i><span>${timeRange(m)}</span>`:''}</div>
+        ${m.court?`<div class="l2">${esc(m.court)}</div>`:''}
       </div>
-      <div class="vs">
-        <div class="pl">${esc(flip?oppLabel:meLabel)}</div>
-        <div class="big num">${leftSets} : ${rightSets}</div>
-        <div class="pl r">${esc(flip?meLabel:oppLabel)}</div>
-      </div>
-      <div class="setgrid">
-        ${dispSets(m).map((x,i,arr)=>{
-          const n=arr.slice(0,i+1).filter(y=>!y.tbk).length;
-          return `<div class="setbox">
-          <div class="n">${x.tbk?'TIE-BREAK':'SET '+n}</div>
-          <div class="v">${x.a}-${x.b}${x.tb?`<sup>${esc(x.tb)}</sup>`:''}</div></div>`;}).join('')}
+      <div class="mh-grid">
+        <div class="mh-hd">${heads.map(t=>`<span>${t}</span>`).join('')}</div>
+        <div class="mh-row ${o==='D'?'':'win'}">
+          ${nameBlock(rowTop)}<div class="mh-sc">${cells('a')}</div>
+        </div>
+        <div class="mh-row ${o==='D'?'':'lose'}">
+          ${nameBlock(rowBottom)}<div class="mh-sc">${cells('b')}</div>
+        </div>
       </div>
     </div>
   </section>`;
 
-  h+=`<div class="resultbanner ${resClass(o)||'n'}">${o==='W'?'✓ Vittoria':o==='L'?'✕ Sconfitta':o==='D'?'= Pareggio':'Risultato incompleto'}</div>`;
+  const setLine=o==='D'?'':` · ${setsTop} set a ${setsBottom}`;
+  h+=`<div class="resultbanner ${resClass(o)||'n'}">${
+    o==='W'?'✓ Vittoria'+setLine:o==='L'?'✕ Sconfitta'+setLine:o==='D'?'= Pareggio':'Risultato incompleto'}</div>`;
 
   h+=`<section class="card"><div class="clabel">Dettagli</div>`;
   if(m.court)h+=`<div class="statline"><div class="k">Campo</div><div class="v" style="font-size:14px">${esc(m.court)}</div></div>`;
