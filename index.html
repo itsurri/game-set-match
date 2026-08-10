@@ -685,6 +685,7 @@ const NOMI_AVVERSARI={
 function fixNames(){
   let n=0;
   (S.matches||[]).forEach(m=>{
+    if(m.updatedAt)return;                    // salvata da te: è definitiva
     if((m.oppFirst||'').trim())return;        // nome già presente: non lo tocco
     const p=oppParts(m);
     const nome=NOMI_AVVERSARI[p.last.trim().toLowerCase()];
@@ -701,6 +702,7 @@ function fixImported(){
   const a=arr=>arr[Math.floor(Math.random()*arr.length)];
   let n=0;
   (S.matches||[]).forEach(m=>{
+    if(m.updatedAt)return;                     // salvata da te: è definitiva
     // le partite del backup: id "imp…", oppure senza esito salvato (quelle del
     // form ce l'hanno sempre, perché l'esito lo scegli tu prima di registrare)
     if(!/^imp/.test(m.id||'') && m.result)return;
@@ -1919,7 +1921,9 @@ function saveMatch(){
     opponent:(d.opponent||'').trim(),oppFirst:(d.oppFirst||'').trim(),
     surface:d.surface,court:(d.court||'').trim(),
     sets,notes:(d.notes||'').trim(),
-    updatedAt:Date.now()      // serve a far vincere questa versione sul cloud
+    updatedAt:Date.now(),     // serve a far vincere questa versione sul cloud
+    fix:DATA_FIX              // una partita salvata da te è definitiva:
+                              // le sistemazioni automatiche non devono più toccarla
   };
   if(d.id){S.matches=S.matches.map(x=>x.id===d.id?m:x);}else{S.matches.push(m);}
   save();draft=null;
