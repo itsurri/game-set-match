@@ -644,7 +644,7 @@ function load(){
   }catch(e){}
   return blank();
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
+function save(){S.touchedAt=Date.now();localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
 /* ── sistemazione una tantum delle partite caricate dal backup ──
@@ -746,15 +746,25 @@ function cloudLogout(){
   fb.signOut(fb.auth);
   cloudUser=null;render();
 }
+function pushNow(){
+  if(!cloudUser||!window.firebase)return;
+  clearTimeout(cloudTimer);cloudTimer=null;
+  const fb=window.firebase;
+  fb.set(fb.ref(fb.db,'users/'+cloudUser.uid),{
+    profile:S.profile, matches:S.matches, theme:S.theme,
+    deleted:S.deleted||[], updatedAt:S.touchedAt||Date.now()
+  }).catch(()=>{});
+}
 function cloudPush(){
   if(!cloudUser||!window.firebase)return;
   clearTimeout(cloudTimer);
-  cloudTimer=setTimeout(()=>{
-    const fb=window.firebase;
-    fb.set(fb.ref(fb.db,'users/'+cloudUser.uid),
-      {profile:S.profile, matches:S.matches, theme:S.theme, updatedAt:Date.now()}).catch(()=>{});
-  },800);
+  cloudTimer=setTimeout(pushNow,800);
 }
+/* Chiudendo l'app il salvataggio ritardato non farebbe in tempo a partire:
+   qui lo si manda subito appena la pagina passa in secondo piano. */
+function cloudFlush(){ if(cloudTimer)pushNow(); }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden')cloudFlush(); });
+window.addEventListener('pagehide',cloudFlush);
 async function cloudPull(){
   if(!cloudUser||cloudBusy)return;
   cloudBusy=true;
@@ -767,14 +777,35 @@ async function cloudPull(){
   cloudBusy=false;
 }
 function mergeFromCloud(remote){
+  const rTime=+remote.updatedAt||0, lTime=+S.touchedAt||0;
+
+  // cancellazioni: unione delle due liste, così una partita eliminata non torna
+  const tombs={};
+  (S.deleted||[]).concat(remote.deleted||[]).forEach(d=>{
+    if(d&&d.id&&(tombs[d.id]||0)<(+d.at||0))tombs[d.id]=+d.at||0;
+  });
+
+  // partite: per ogni id vince la versione modificata più di recente,
+  // non più sempre quella del cloud (era questo a far sparire le modifiche)
   const map={};
   (S.matches||[]).forEach(m=>map[m.id]=m);
-  (remote.matches||[]).forEach(m=>map[m.id]=m);
-  S.matches=Object.values(map);
-  if(remote.profile)S.profile=Object.assign(S.profile,remote.profile);
-  if(remote.theme)S.theme=remote.theme;
+  (remote.matches||[]).forEach(r=>{
+    const l=map[r.id];
+    if(!l||(+r.updatedAt||0)>=(+l.updatedAt||0))map[r.id]=r;
+  });
+  S.matches=Object.values(map).filter(m=>{
+    const t=tombs[m.id];
+    return !(t&&t>(+m.updatedAt||0));   // cancellata dopo l'ultima modifica
+  });
+  S.deleted=Object.keys(tombs).map(id=>({id,at:tombs[id]})).slice(-200);
+
+  // profilo e tema: si prende il cloud solo se più recente di quanto hai in locale
+  if(remote.profile&&(rTime>lTime||!S.profile.name))S.profile=Object.assign(S.profile,remote.profile);
+  if(remote.theme&&rTime>lTime)S.theme=remote.theme;
+
   localStorage.setItem(KEY,JSON.stringify(S));
   fixImported();fixNames();   // i dati arrivati dal cloud possono essere ancora da sistemare
+  cloudPush();                // riallinea il cloud col risultato dell'unione
   applyTheme();render();
 }
 window.addEventListener('gsm-fb-ready', initCloud);
@@ -1793,7 +1824,11 @@ document.addEventListener('click',e=>{
     }
     case 'del':{
       if(confirm('Eliminare questa partita?')){
-        S.matches=S.matches.filter(x=>x.id!==t.dataset.id);save();flash('Partita eliminata');go('hist');}
+        const id=t.dataset.id;
+        S.matches=S.matches.filter(x=>x.id!==id);
+        // la cancellazione va ricordata, altrimenti il cloud la rimetterebbe
+        S.deleted=(S.deleted||[]).filter(d=>d.id!==id).concat([{id,at:Date.now()}]).slice(-200);
+        save();flash('Partita eliminata');go('hist');}
       break;
     }
     case 'fsurf':{
@@ -1883,7 +1918,8 @@ function saveMatch(){
     id:d.id||uid(),date:d.date,time:d.time,duration:+d.duration||60,result:d.result,
     opponent:(d.opponent||'').trim(),oppFirst:(d.oppFirst||'').trim(),
     surface:d.surface,court:(d.court||'').trim(),
-    sets,notes:(d.notes||'').trim()
+    sets,notes:(d.notes||'').trim(),
+    updatedAt:Date.now()      // serve a far vincere questa versione sul cloud
   };
   if(d.id){S.matches=S.matches.map(x=>x.id===d.id?m:x);}else{S.matches.push(m);}
   save();draft=null;
