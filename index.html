@@ -647,78 +647,6 @@ function load(){
 function save(){S.touchedAt=Date.now();localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
-/* ── sistemazione una tantum delle partite caricate dal backup ──
-   Quelle 150 partite non avevano orario scelto, durata né campo: all'epoca i
-   campi non esistevano ancora. Qui ricevono un orario reale, un'ora di durata
-   e il circolo giusto per anno e superficie.
-   Il marcatore sta sulla singola partita, non sull'insieme: così funziona anche
-   quando le partite arrivano dal cloud dopo l'avvio, e non si ripete. */
-const DATA_FIX=2;
-const ORARI_REALI=['10:00','11:00','12:00','17:00','18:00','19:00','20:00','21:00'];
-const CIRCOLI_TERRA=['Momy Sport Village','Monviso Sporting Club','Fornaci','Circoletto Rosso',
-                     'Trecate 46','Nord Tennis','Master Club'];
-const CIRCOLI_CEMENTO=['De Coubertin','Momy Sport Village'];
-/* ── nomi degli avversari ──
-   Le partite del backup avevano solo il cognome. Qui arriva il nome di battesimo.
-   Non serve un marcatore: una volta scritto il nome, la partita viene saltata,
-   e le partite dove il nome l'hai messo tu non vengono mai toccate. */
-const NOMI_AVVERSARI={
-  "ambrosi":"Stefano","amodeo":"Davide","armentano":"Marco","battaglino":"Fabrizio",
-  "bellone":"Edoardo","bertero":"Paolo","bianchini":"Bruno","birro":"Valter",
-  "bonello":"Paolo","borda":"Enzo","calitri":"Claudio","calo":"Marco",
-  "cambareri":"Rocco","carchia":"Giuseppe","cardella":"Giuseppe","cileo":"Pierluigi",
-  "correale":"Caterina","d'avanzo":"Raffaele","de rosa":"Raffaele","delfino":"Daniele",
-  "dellerba":"Michele","di maria":"Andrea","esposito":"Davide","fabris":"Alessandro",
-  "federico":"Andrea","fornaro":"Edoardo","giuffrida":"Simone","goria":"Luca",
-  "la rocca":"Roberto","lavilla":"Alessandro","leto":"Simone","longo":"Simone",
-  "marabotto":"Adolfo","marusich":"Mattia","mazza":"Giuseppe","morello":"Diego",
-  "morino":"Fabrizio","morra":"Andrea","moscaritolo":"Fabrizio","murati":"Michelangelo",
-  "musarella":"Giorgio","pacileo":"Lino","petrazzi":"Mirko","picco":"Giorgio",
-  "piva":"Stefano","pontone":"Riccardo","ponzo":"Andrea","porporato":"Riccardo",
-  "porri":"Andrea","rinaldi":"Edoardo","rolle":"Stefano","rosotto":"Giovanni",
-  "ruffinello":"Federico","ruggiero":"Simone","santarelli":"Francesco","schaffner":"Thomas",
-  "sembenelli":"Riccardo","sicco":"Varner","sollazzo":"Paolo","tarricone":"Francesco",
-  "testa":"Daniele","uliano":"Guido","vai":"Dario","valentina":"Valentian",
-  "villani":"Michele","visconti":"Alessandro","voltarel":"Michele","vuerich":"Max",
-  "zito":"Fabio"
-};
-function fixNames(){
-  let n=0;
-  (S.matches||[]).forEach(m=>{
-    if(m.updatedAt)return;                    // salvata da te: è definitiva
-    if((m.oppFirst||'').trim())return;        // nome già presente: non lo tocco
-    const p=oppParts(m);
-    const nome=NOMI_AVVERSARI[p.last.trim().toLowerCase()];
-    if(!nome)return;
-    m.oppFirst=nome;
-    m.opponent=p.last;                        // ripulisce anche "Marusich M."
-    n++;
-  });
-  if(n){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
-  return n;
-}
-
-function fixImported(){
-  const a=arr=>arr[Math.floor(Math.random()*arr.length)];
-  let n=0;
-  (S.matches||[]).forEach(m=>{
-    if(m.updatedAt)return;                     // salvata da te: è definitiva
-    // le partite del backup: id "imp…", oppure senza esito salvato (quelle del
-    // form ce l'hanno sempre, perché l'esito lo scegli tu prima di registrare)
-    if(!/^imp/.test(m.id||'') && m.result)return;
-    if((m.fix||0)>=DATA_FIX)return;            // marcatore sulla singola partita
-    if(ORARI_REALI.indexOf(m.time)<0)m.time=a(ORARI_REALI);
-    if(!m.duration)m.duration=60;
-    const y=(m.date||'').slice(0,4);
-    if(y==='2026')m.court='Laurera 15A40';
-    else if(y==='2024'||y==='2025')m.court=a(m.surface==='clay'?CIRCOLI_TERRA:CIRCOLI_CEMENTO);
-    m.fix=DATA_FIX;
-    n++;
-  });
-  if(n){localStorage.setItem(KEY,JSON.stringify(S));cloudPush();}
-  return n;
-}
-
 /* =========================================================
    CLOUD SYNC (Firebase Auth + Realtime Database)
    ========================================================= */
@@ -806,7 +734,6 @@ function mergeFromCloud(remote){
   if(remote.theme&&rTime>lTime)S.theme=remote.theme;
 
   localStorage.setItem(KEY,JSON.stringify(S));
-  fixImported();fixNames();   // i dati arrivati dal cloud possono essere ancora da sistemare
   cloudPush();                // riallinea il cloud col risultato dell'unione
   applyTheme();render();
 }
@@ -1921,9 +1848,7 @@ function saveMatch(){
     opponent:(d.opponent||'').trim(),oppFirst:(d.oppFirst||'').trim(),
     surface:d.surface,court:(d.court||'').trim(),
     sets,notes:(d.notes||'').trim(),
-    updatedAt:Date.now(),     // serve a far vincere questa versione sul cloud
-    fix:DATA_FIX              // una partita salvata da te è definitiva:
-                              // le sistemazioni automatiche non devono più toccarla
+    updatedAt:Date.now()      // serve a far vincere questa versione sul cloud
   };
   if(d.id){S.matches=S.matches.map(x=>x.id===d.id?m:x);}else{S.matches.push(m);}
   save();draft=null;
@@ -2042,7 +1967,6 @@ go=function(n,p){
 };
 history.replaceState({v:view},'','');
 
-fixImported();fixNames();
 render();
 </script>
 </body>
